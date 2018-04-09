@@ -7,8 +7,9 @@
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/fontello.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script type="text/javascript" src="script.js"></script>
 </head>
-<body>
+<body onload="pedirRecetasFetch(0); loadMenu();">
 	<header>
 		<div>
 			<div>
@@ -21,142 +22,20 @@
 		</div>
 		<input type="checkbox" hidden id="hamburguesa">
 		<nav>
-				<ul>
-					<li><label for="hamburguesa">&equiv;</label></li>
-					<li><a href="index.html"><span class="icon-home-outline"></span><span>INICIO</span></a></li>
-					<li><a href="buscar.html"><span class="icon-search"></span><span>BUSCAR</span></a></li>
-					<li><a href="login.html"><span class="icon-login"></span><span>LOGIN</span></a></li>
-					<li><a href="registro.html"><span class="icon-user-plus"></span><span>REGISTRO</span></a></li>
-					<li><a href="index.html"><span class="icon-logout"></span><span>LOGOUT</span></a></li>
-					<li><a href="nueva-receta.html"><span class="icon-list-add"></span><span>NUEVA RECETA</span></a></li>
-					<li><a href="acerca.html"><span class="icon-info-circled"></span><span>ACERCA DE</span></a></li>
+				<ul id="menu">
 				</ul>
 			</nav>
 	</header>
 
 	<div class="form-cabecera">
 		<form action="index.html">
-			<select name="orden">
-				<option value="asc">Ascendente</option>
-				<option value="desc">Descendente</option>
-			</select>
-			<select name="orden">
-				<option value="fecha">Fecha</option>
-				<option value="val">Valoración</option>
-			</select>
-			<input type="submit" value="Cambiar">
-		</form>
-		<form action="index.html">
 			<input type="text" placeholder="Busca rápido aquí">
 			<input type="submit" value="Buscar">
 		</form>
 	</div>
 	
-	<section>
+	<section id="receipts">
 		<h2>TODAS LAS RECETAS</h2>
-		<article>
-			<div>
-				<a href="receta.html"><h2>Tacos</h2></a>
-			</div>
-			<div class="content">
-				<img src="img/tacos.jpg" alt="foto de la receta">
-				<p><a href="buscar.html"><strong><span class="icon-user"></span>Un fiera de la cocina</strong></a></p>
-				<span class="icon-calendar"></span><time datetime="2018-02-14 20:00">Martes, 14-02-2018, 20:00 </time>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo, exercitationem, accusamus. Possimus odio vel voluptas corporis, voluptate deserunt laudantium pariatur, odit sit eaque quisquam maiores voluptatibus id sequi. Itaque deleniti, officia odit repellat ad! Sed doloribus dolores cumque. Quae, cumque.</p>
-				<ul>
-					<li><span class="icon-thumbs-up"></span>25</li>
-					<li><span class="icon-thumbs-down"></span> 2 </li> 
-					<li><span class="icon-comment"></span> 12 </li>
-				</ul>		
-			</div>
-		</article>
-		<article>
-			<div>
-				<a href="receta.html"><h2>Hamburguesa</h2></a>
-			</div>
-			<div class="content">
-				<img src="img/hamburguesa.jpg" alt="foto de la receta">
-				<p><a href="buscar.html"><strong><span class="icon-user"></span>Un fiera de la cocina</strong></a></p>
-				<span class="icon-calendar"></span><time datetime="2018-02-14 20:00">Martes, 14-02-2018, 20:00 </time>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo, exercitationem, accusamus. Possimus odio vel voluptas corporis, voluptate deserunt laudantium pariatur, odit sit eaque quisquam maiores voluptatibus id sequi. Itaque deleniti, officia odit repellat ad! Sed doloribus dolores cumque. Quae, cumque.</p>
-				<ul>
-					<li><span class="icon-thumbs-up"></span>25</li>
-					<li><span class="icon-thumbs-down"></span> 2 </li> 
-					<li><span class="icon-comment"></span> 12 </li>
-				</ul>		
-			</div>
-		</article>
-		<article>
-			<div>
-				<a href="receta.html"><h2>Kebab Deluxe</h2></a>
-			</div>
-			<div class="content">
-				<img src="img/kebab.jpg" alt="foto de la receta">
-				<p><a href="buscar.html"><strong><span class="icon-user"></span>Un fiera de la cocina</strong></a></p>
-				<span class="icon-calendar"></span><time datetime="2018-02-14 20:00">Martes, 14-02-2018, 20:00 </time>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo, exercitationem, accusamus. Possimus odio vel voluptas corporis, voluptate deserunt laudantium pariatur, odit sit eaque quisquam maiores voluptatibus id sequi. Itaque deleniti, officia odit repellat ad! Sed doloribus dolores cumque. Quae, cumque.</p>
-				<ul>
-					<li><span class="icon-thumbs-up"></span>25</li>
-					<li><span class="icon-thumbs-down"></span> 2 </li> 
-					<li><span class="icon-comment"></span> 12 </li>
-				</ul>		
-			</div>
-		</article>
-		<article>
-			<div>
-				<a href="receta.html"><h2>Tacos</h2></a>
-			</div>
-			<div class="content">
-				<img src="img/tacos.jpg" alt="foto de la receta">
-				<p><a href="buscar.html"><strong><span class="icon-user"></span>Un fiera de la cocina</strong></a></p>
-				<span class="icon-calendar"></span><time datetime="2018-02-14 20:00">Martes, 14-02-2018, 20:00 </time>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo, exercitationem, accusamus. Possimus odio vel voluptas corporis, voluptate deserunt laudantium pariatur, odit sit eaque quisquam maiores voluptatibus id sequi. Itaque deleniti, officia odit repellat ad! Sed doloribus dolores cumque. Quae, cumque.</p>
-				<ul>
-					<li><span class="icon-thumbs-up"></span>25</li>
-					<li><span class="icon-thumbs-down"></span> 2 </li> 
-					<li><span class="icon-comment"></span> 12 </li>
-				</ul>		
-			</div>
-		</article>
-		<article>
-			<div>
-				<a href="receta.html"><h2>Hamburguesa</h2></a>
-			</div>
-			<div class="content">
-				<img src="img/hamburguesa.jpg" alt="foto de la receta">
-				<p><a href="buscar.html"><strong><span class="icon-user"></span>Un fiera de la cocina</strong></a></p>
-				<span class="icon-calendar"></span><time datetime="2018-02-14 20:00">Martes, 14-02-2018, 20:00 </time>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo, exercitationem, accusamus. Possimus odio vel voluptas corporis, voluptate deserunt laudantium pariatur, odit sit eaque quisquam maiores voluptatibus id sequi. Itaque deleniti, officia odit repellat ad! Sed doloribus dolores cumque. Quae, cumque.</p>
-				<ul>
-					<li><span class="icon-thumbs-up"></span>25</li>
-					<li><span class="icon-thumbs-down"></span> 2 </li> 
-					<li><span class="icon-comment"></span> 12 </li>
-				</ul>		
-			</div>
-		</article>
-		<article>
-			<div>
-				<a href="receta.html"><h2>Kebab Deluxe</h2></a>
-			</div>
-			<div class="content">
-				<img src="img/kebab.jpg" alt="foto de la receta">
-				<p><a href="buscar.html"><strong><span class="icon-user"></span>Un fiera de la cocina</strong></a></p>
-				<span class="icon-calendar"></span><time datetime="2018-02-14 20:00">Martes, 14-02-2018, 20:00 </time>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo, exercitationem, accusamus. Possimus odio vel voluptas corporis, voluptate deserunt laudantium pariatur, odit sit eaque quisquam maiores voluptatibus id sequi. Itaque deleniti, officia odit repellat ad! Sed doloribus dolores cumque. Quae, cumque.</p>
-				<ul>
-					<li><span class="icon-thumbs-up"></span>25</li>
-					<li><span class="icon-thumbs-down"></span> 2 </li> 
-					<li><span class="icon-comment"></span> 12 </li>
-				</ul>		
-			</div>
-		</article>
-	<ul>
-		<li><a href="">Primera</a></li>
-		<li><a href=""><span class="icon-left-big"></span></a></li>
-		<li><a href="index.html">1</a></li>
-		<li><a href=""><span class="icon-right-big"></span></a></li>
-		<li><a href="">Última</a></li>
-	</ul>	
 	
 	</section>
 

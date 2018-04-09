@@ -1,6 +1,16 @@
 
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 
+.error
+	{
+		background-color: #CC2B25;
+		color: #fff;
+		padding: 1em;
+		margin: 0;
+		text-align: center;
+	}
+
+
 *
 {
 	box-sizing: border-box;
@@ -545,9 +555,10 @@ body>section
 		margin: .5em;
 	}
 
-	body>section>ul>li>a
+	body>section>ul>li>button
 	{
 		font-size: 18px;
+		border: 0;
 		background-color: #007F2D;
 		padding: .5em;
 		text-decoration: none;
@@ -555,7 +566,7 @@ body>section
 		box-shadow: 0 3px 4px 0 rgba(0,0,0,0.2);
 	}
 
-	body>section>ul>li>a:hover
+	body>section>ul>li>button:hover
 	{
 		background-color: #25CC60;
 	}
@@ -920,6 +931,9 @@ body>section
 			color: #fff;
 			text-decoration: none; 
 		}
+
+
+	/*COSAS QUE METE JAVASCRIPT*/
 
 
 @media all and (min-width: 406px)

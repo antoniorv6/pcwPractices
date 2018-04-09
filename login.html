@@ -4,16 +4,18 @@
 	<meta charset="UTF-8">
 	<title>Login</title>
 	<link rel="stylesheet" href="css/style.css">
+	<script type="text/javascript" src="script.js"></script>
 </head>
 <body>
 	<div>
 		<a href="index.html"><img src="img/logoblanco.png" alt="logo de la empresa"></a>
 	</div>
 	<div class="form-basic">
-		<form action="index.html" method="POST" >
+		<form onsubmit="return Login(this);" >
 			<h2>Inicia sesión en la aplicación</h2>
-			<input type="text" pattern="^[a-zA-z][a-zA-Z0-9]{5,19}$" required title="El nombre de usuario debe contener caracteres del alfabeto o números" name="usuario" autofocus placeholder="Login">
-			<input type="password" pattern="^[a-zA-Z0-9_-]{5,19}$" required title="Su contraseña debe contener caracteres del alfabeto, números naturales y algún caracter especial" name = "contrasenya" placeholder="Contraseña" />
+			<div class="error_message"></div>
+			<input type="text" pattern="^[a-zA-z][a-zA-Z0-9]{5,19}$" required title="El nombre de usuario debe contener caracteres del alfabeto o números" name="login" autofocus placeholder="Login">
+			<input type="password" pattern="^[a-zA-Z0-9_-]{5,19}$" required title="Su contraseña debe contener caracteres del alfabeto, números naturales y algún caracter especial" name = "pwd" placeholder="Contraseña" />
 			<input type="submit" value="LOGIN">	
 		</form>
 	</div>
