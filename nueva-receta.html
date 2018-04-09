@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Nueva Receta</title>
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/fontello.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	<header>
+		<div>
+			<div>
+				<img src="img/logo.png" alt="logo de la marca">
+				<div>
+					<h1>FOODER'S CHOICE</h1>
+					<p>El portal de los selectos en comida</p>
+				</div>
+			</div>
+		</div>
+		<input type="checkbox" hidden id="hamburguesa">
+		<nav>
+				<ul>
+					<li><label for="hamburguesa">&equiv;</label></li>
+					<li><a href="index.html"><span class="icon-home-outline"></span><span>INICIO</span></a></li>
+					<li><a href="buscar.html"><span class="icon-search"></span><span>BUSCAR</span></a></li>
+					<li><a href="login.html"><span class="icon-login"></span><span>LOGIN</span></a></li>
+					<li><a href="registro.html"><span class="icon-user-plus"></span><span>REGISTRO</span></a></li>
+					<li><a href="index.html"><span class="icon-logout"></span><span>LOGOUT</span></a></li>
+					<li><a href="nueva-receta.html"><span class="icon-list-add"></span><span>NUEVA RECETA</span></a></li>
+					<li><a href="acerca.html"><span class="icon-info-circled"></span><span>ACERCA DE</span></a></li>
+				</ul>
+			</nav>
+	</header>
+
+
+	
+	<div class="form-newrecepee">
+		
+		<h2>Crear nueva receta: </h2>
+
+		<form action="nueva-receta.html">
+		
+			<label >Nombre de la receta </label>
+			<input type="text" name="nombre" required maxlength="200">
+			
+			<label>Elaboración </label>
+			<textarea name="elab" cols="30" rows="10" required></textarea>
+
+			<label>Tiempo de elaboración </label>
+			<input type="number" name="tiempo" min="0" required>
+			
+			<label >Dificultad</label>
+			<select name="dificultad">
+				<option value="baja">Baja</option>
+				<option value="media">Media</option>
+				<option value="alta">Alta</option>
+			</select>
+			<label>Número de comensales </label>
+			<input type="number" name="comensales" required>
+			<label>Ingredientes</label>
+			<ul contenteditable="true">
+				<li>Lorem ipsum dolor sit amet.</li>
+				<li>Lorem ipsum dolor sit amet.</li>
+				<li>Lorem ipsum dolor sit amet.</li>
+				<li>Lorem ipsum dolor sit amet.</li>
+			</ul>
+			<label>Subir fotografías</label>
+			<input type="file" name="fotos" title="Añadir Fotografías" multiple>	
+			<img src="img/tacos.jpg" alt="foto1">
+			<input type="file" name="fotos" title="Subir">	
+			<button>Eliminar</button>
+			<textarea name="1" cols="20" rows="5" maxlength="250" placeholder="Añade una descripción de no más de 250 caracteres"></textarea>
+			<img src="img/hamburguesa.jpg" alt="foto1">	
+			<input type="file" name="fotos" title="Subir">	
+			<button>Eliminar</button>
+			<textarea name="1" cols="20" rows="5" maxlength="250" placeholder="Añade una descripción de no más de 250 caracteres"></textarea>
+			<img src="img/kebab.jpg" alt="foto2">
+			<input type="file" name="fotos" title="Subir">	
+			<button>Eliminar</button>
+			<textarea name="1" cols="20" rows="5" maxlength="250" placeholder="Añade una descripción de no más de 250 caracteres"></textarea>
+			
+			<input type="submit" title="¡Publicar!" value="¡Publicar!">
+		</form>
+
+	</div>
+	
+	<footer>&copy; <strong><a href="acerca.html">Antonio Ríos Vila</a></strong> Alicante - <time datetime="2018" >2018</time> <a href="index.html">Página principal</a><a href="acerca.html">Información de contacto</a></footer>
+	
+</body>
+</html>
