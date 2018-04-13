@@ -244,6 +244,181 @@ function Login(form)
 	return false;
 }
 
+
+function BuscarPorFormulario(form)
+{
+	let formulario = new FormData(form);
+	c_seccion = document.querySelector('#receipts');
+	let url = 'rest/receta/?';
+    
+    var first_par = true;
+	
+	//Procesamos los datos de la búsqueda
+	if(formulario.get('nombre') != "")
+	{
+		if(first_par)
+		{
+			url += 'n=' + formulario.get('nombre');
+			first_par = false;
+		}
+		else
+			url += '&n=' + formulario.get('nombre');
+		
+	}
+	if(formulario.get('ingredientes') != "")
+	{
+		if(first_par)
+		{
+			url += 'i=' + formulario.get('ingredientes');
+			first_par = false;
+		}
+		else
+			url += '&i=' + formulario.get('ingredientes');
+		
+	}
+	
+	if(formulario.get('dificultad') != "")
+	{
+		if(first_par)
+		{
+			url += 'd=' + formulario.get('dificultad');
+			first_par = false;
+		}
+		else
+			url += '&d=' + formulario.get('dificultad');
+		
+	}
+
+	if(formulario.get('comensales') != "")
+	{
+		if(first_par)
+		{
+			url += 'c=' + formulario.get('comensales');
+			first_par = false;
+		}
+		else
+			url += '&c=' + formulario.get('comensales');
+		
+	}
+
+	if(formulario.get('autor') != "")
+	{
+		if(first_par)
+		{
+			url += 'a=' + formulario.get('autor');
+			first_par = false;
+		}
+		else
+			url += '&a=' + formulario.get('autor');
+		
+	}
+
+	if(formulario.get('mintiempo')!="" && formulario.get('maxtiempo')!="")
+	{
+		//Toca comparar los tiempos
+		if(Number(formulario.get('maxtiempo'))>Number(formulario.get('mintiempo')))
+		{
+			if(first_par)
+			{
+				url += 'di=' + formulario.get('mintiempo');
+				first_par = false;
+			}
+			else
+				url += '&di=' + formulario.get('mintiempo');
+			
+			url+= '&df=' + formulario.get('maxtiempo');
+			
+		}
+	}
+	else
+	{
+		if(formulario.get('mintiempo')!="")
+		{
+			if(first_par)
+			{
+				url += 'di=' + formulario.get('mintiempo');
+				first_par = false;
+			}
+			else
+				url += '&di=' + formulario.get('mintiempo');
+		}
+
+		if(formulario.get('maxtiempo')!="")
+		{
+			if(first_par)
+			{
+				url += 'df=' + formulario.get('maxtiempo');
+				first_par = false;
+			}
+			else
+				url += '&df=' + formulario.get('maxtiempo');
+		}
+
+	}
+	//Terminamos de procesar todos los datos de búsqueda
+	console.log(url);
+
+	//Procesamos la petición GET con la URL
+	fetch(url).then(function(response){
+		response.text().then(function(texto)
+		{
+			let objJSON = JSON.parse(texto);
+			console.log(objJSON.FILAS.length);
+			c_seccion.innerHTML = null;
+
+			if(objJSON.FILAS.length == 0)
+			{
+				c_seccion.innerHTML += '<h3 class="errorbusqueda">NO SE HA ENCONTRADO NINGUNA RECETA</h3>';
+			}
+			else
+			{
+				for(let k in objJSON.FILAS)
+				{
+					c_seccion.innerHTML += 
+					`<article>
+					<div>
+					<a href="receta.html"><h2>` + objJSON.FILAS[k].nombre + `</h2></a>
+					</div>
+					<div class="content">
+					<img src='fotos/`+ 
+					objJSON.FILAS[k].fichero 
+					+`'alt="foto de la receta">
+					<p><a href="buscar.html?type=1&a=`+objJSON.FILAS[k].autor+`"><strong><span class="icon-user"></span>`+
+					objJSON.FILAS[k].autor
+					+`</strong></a></p>
+					<span class="icon-calendar"></span><time datetime="`+
+					objJSON.FILAS[k].fecha
+					+`">`+
+					objJSON.FILAS[k].fecha
+					+`</time>
+					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo, exercitationem, accusamus. Possimus odio vel voluptas corporis, voluptate deserunt laudantium pariatur, odit sit eaque quisquam maiores voluptatibus id sequi. Itaque deleniti, officia odit repellat ad! Sed doloribus dolores cumque. Quae, cumque.</p>
+						<ul>
+							<li><span class="icon-thumbs-up"></span>`+objJSON.FILAS[k].positivos+`</li>
+							<li><span class="icon-thumbs-down"></span>`+objJSON.FILAS[k].negativos+`</li> 
+							<li><span class="icon-comment"></span>`+objJSON.FILAS[k].comentarios+`</li>
+						</ul>		
+					</div>
+					</article>`;
+				}
+
+				c_seccion.innerHTML += 
+				`<ul>
+					<li><button>Primera</button></li>
+					<li><button onclick="pedirRecetasFetch(-1);"><span class="icon-left-big"></span></button></li>
+					<li><button>`+(Number(sessionStorage.getItem('actual'))+1)+`</button></li>
+					<li><button onclick="pedirRecetasFetch(1);"><span class="icon-right-big"></span></button></li>
+					<li><button>Última</button></li>
+				</ul>`
+			}	
+		});
+	}, 
+	function(error){
+		console.log('ERORR');
+	});
+
+	return false;
+}
+
 /*
 function dejarComentario()
 {

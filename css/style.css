@@ -10,6 +10,15 @@
 		text-align: center;
 	}
 
+.errorbusqueda
+{
+	background-color: #fff;
+	padding: 1em;
+	margin: 0;
+	text-align: center;
+	width: 100%;
+}
+
 
 *
 {
@@ -379,7 +388,6 @@ body>div>a>img
 	{
 		border: 1px solid #0A0F14;
 		font-size: 16px;
-		text-transform: uppercase;
 		padding: .45em;
 	}
 	.form-buscar>form>select
