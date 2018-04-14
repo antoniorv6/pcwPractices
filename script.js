@@ -484,6 +484,48 @@ function BuscarPorFormulario(form)
 	return false;
 }
 
+function Register(request)
+{
+	let formulario = new FormData(request)
+		xhr = new XMLHttpRequest(),
+		url = 'rest/usuario/';
+		clave = undefined;
+	xhr.open('POST',url, true);
+	
+	xhr.onload = function()
+	{
+		console.log(xhr.responseText);
+		let r = JSON.parse(xhr.responseText);
+		if(r.RESULTADO == 'ERROR')
+		{
+			let c_seccion = document.querySelector('#mensajemodal');
+			let mensajeModal = document.querySelector('.contenidomodal');
+			mensajeModal.innerHTML = '<h3 class="modalHeaderFail"> ERROR</h3><div class="modalcontent"><p>'+r.DESCRIPCION+'</p> <button onclick="closeModal()">Vuelve a intentarlo</a></div>';
+			c_seccion.style.display = "block";		
+		}
+		else
+		{
+			let c_seccion = document.querySelector('#mensajemodal');
+			let mensajeModal = document.querySelector('.contenidomodal');
+			mensajeModal.innerHTML = `<h3 class="modalHeaderSuccess">ENHORABUENA</h3>
+			<div class="modalcontent"><p>Te has registrado correctamente en Fooder's Choice ¡Disfruta de tu experiencia!</p>
+			<a href="index.html">¡De acuerdo!</a></div>`;
+			c_seccion.style.display = "block";
+			console.log(r);
+		}
+	};
+
+	xhr.send(formulario);
+
+	return false;
+}
+
+function closeModal()
+{
+	let c_seccion = document.querySelector('#mensajemodal');
+	c_seccion.style.display = "none";
+}
+
 /*
 function dejarComentario()
 {
