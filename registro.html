@@ -17,7 +17,8 @@
 	<div class="form-basic">
 		<form onsubmit="return Register(this);">
 			<h2>Crea tu cuenta en la aplicación</h2>
-			<input type="text" pattern="^[a-zA-z][a-zA-Z0-9]{5,19}" maxlength="20" minlength="6" title="El nombre de usuario debe contener caracteres del alfabeto o números" name="login" placeholder = "Cuenta" autofocus>
+			<input type="text" pattern="^[a-zA-z][a-zA-Z0-9]{5,19}" maxlength="20" minlength="6" title="El nombre de usuario debe contener caracteres del alfabeto o números" name="login" placeholder = "Cuenta" autofocus onkeyup="return checkUsr(this.value)">
+			<div id="message"></div>
 			<input type="text" pattern="^[a-zA-z][a-zA-Z0-9]{5,19}" maxlength="20" minlength="6" title="El nombre de usuario debe contener caracteres del alfabeto o números" name="nombre" placeholder="Nombre de usuario">
 			<input type="password" pattern="^[a-zA-Z0-9_-]{5,19}$" required title="Su contraseña debe contener caracteres del alfabeto, números naturales y algún caracter especial" name = "pwd" placeholder="Contraseña" />
 			<input type="password" pattern="^[a-zA-Z0-9_-]{5,19}$" required title="Su contraseña debe contener caracteres del alfabeto, números naturales y algún caracter especial" name = "pwd2" placeholder="Repite la contraseña" />

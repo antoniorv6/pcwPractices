@@ -526,6 +526,42 @@ function closeModal()
 	c_seccion.style.display = "none";
 }
 
+function checkUsr(usrname)
+{
+	console.log(usrname);
+	let c_url = 'rest/login/' + usrname;
+	c_seccion = document.querySelector('#message');
+
+	if(usrname.length < 6)
+	{
+		c_seccion.innerHTML = `<p class="modalHeaderFail">Por favor, escriba un nombre de usuario con longitud mayor a 6 caracteres</p>`
+	}
+	else
+	{
+
+
+	fetch(c_url).then(function(response){
+		response.text().then(function(texto)
+		{
+			let objJSON = JSON.parse(texto);
+			if (objJSON.DISPONIBLE == true) 
+			{
+				c_seccion.innerHTML = `<p class="modalHeaderSuccess">Nombre de usuario disponible</p>`
+			}
+			else
+			{
+				c_seccion.innerHTML = `<p class="modalHeaderFail">Nombre de usuario no disponible, escoja otro por favor</p>`
+			}
+		});
+	}, 
+	function(error){
+		console.log('ERORR');
+	});
+	}
+
+	return false;
+}
+
 /*
 function dejarComentario()
 {
