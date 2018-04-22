@@ -125,47 +125,41 @@ function QuickSearch(form)
 		c_seccion = document.querySelector('#receipts');
 
 	fetch(c_url).then(function(response){
-		response.text().then(function(texto)
+		response.json().then(function(texto)
 		{
-			let objJSON = JSON.parse(texto);
-			console.log(objJSON.FILAS.length);
-			c_seccion.innerHTML = null;
-			if(objJSON.FILAS.length == 0)
-			{
-				c_seccion.innerHTML += '<h3 class="errorbusqueda">NO SE HA ENCONTRADO NINGUNA RECETA</h3>';
-			}
-			else
-			{
-			for(let k in objJSON.FILAS)
+			texto.FILAS.forEach(function(objJSON)
 			{
 				c_seccion.innerHTML += 
 				`<article>
 				<div>
-				<a href="receta.html"><h2>` + objJSON.FILAS[k].nombre + `</h2></a>
+				<a href="receta.html"><h2>` + objJSON.nombre + `</h2></a>
 				</div>
 				<div class="content">
 				<img src='fotos/`+ 
-				objJSON.FILAS[k].fichero 
+				objJSON.fichero 
 				+`'alt="foto de la receta">
-				<p><a href="buscar.html?type=1&a=`+objJSON.FILAS[k].autor+`"><strong><span class="icon-user"></span>`+
-				objJSON.FILAS[k].autor
+				<p><a href="buscar.html?type=1&a=`+objJSON.autor+`"><strong><span class="icon-user"></span>`+
+				objJSON.autor
 				+`</strong></a></p>
 				<span class="icon-calendar"></span><time datetime="`+
-				objJSON.FILAS[k].fecha
+				objJSON.fecha
 				+`">`+
-				objJSON.FILAS[k].fecha
+				objJSON.fecha
 				+`</time>
 				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo, exercitationem, accusamus. Possimus odio vel voluptas corporis, voluptate deserunt laudantium pariatur, odit sit eaque quisquam maiores voluptatibus id sequi. Itaque deleniti, officia odit repellat ad! Sed doloribus dolores cumque. Quae, cumque.</p>
 					<ul>
-						<li><span class="icon-thumbs-up"></span>`+objJSON.FILAS[k].positivos+`</li>
-						<li><span class="icon-thumbs-down"></span>`+objJSON.FILAS[k].negativos+`</li> 
-						<li><span class="icon-comment"></span>`+objJSON.FILAS[k].comentarios+`</li>
+						<li><span class="icon-thumbs-up"></span>`+objJSON.positivos+`</li>
+						<li><span class="icon-thumbs-down"></span>`+objJSON.negativos+`</li> 
+						<li><span class="icon-comment"></span>`+objJSON.comentarios+`</li>
 					</ul>		
 				</div>
 				</article>`;
 			}
 
-			c_seccion.innerHTML += 
+				
+		);
+
+		c_seccion.innerHTML += 
 			`<ul>
 				<li><button>Primera</button></li>
 				<li><button onclick="pedirRecetasFetch(-1);"><span class="icon-left-big"></span></button></li>
@@ -173,12 +167,11 @@ function QuickSearch(form)
 				<li><button onclick="pedirRecetasFetch(1);"><span class="icon-right-big"></span></button></li>
 				<li><button>Última</button></li>
 			</ul>`
-		}	
-		});
 	}, 
 	function(error){
 		console.log('ERORR');
 	});
+});
 
 	return false;
 }
@@ -216,7 +209,10 @@ function pedirRecetasFetch(increment)
 	}
 	else
 	{
-		sessionStorage.setItem('actual', Number(sessionStorage.getItem('actual'))+increment);
+		if(Number(sessionStorage.getItem('actual'))+increment>=0)
+			sessionStorage.setItem('actual', Number(sessionStorage.getItem('actual'))+increment);
+		else
+			return;
 	}
 
 	console.log(increment);
@@ -224,55 +220,62 @@ function pedirRecetasFetch(increment)
 	let c_url = 'rest/receta/?pag='+sessionStorage.getItem('actual')+'&lpag=6'
 		c_seccion = document.querySelector('#receipts');
 
+		c_seccion.innerHTML = null;
 	fetch(c_url).then(function(response){
-		response.text().then(function(texto)
+		response.json().then(function(texto)
 		{
-			let objJSON = JSON.parse(texto);
-			console.log(objJSON.FILAS.length);
-			c_seccion.innerHTML = null;
-			for(let k in objJSON.FILAS)
+			if (texto.FILAS.length == 0) 
+			{
+				pedirRecetasFetch(-1);
+				return;
+			}
+			texto.FILAS.forEach(function(objJSON)
 			{
 				c_seccion.innerHTML += 
 				`<article>
 				<div>
-				<a href="receta.html"><h2>` + objJSON.FILAS[k].nombre + `</h2></a>
+				<a href="receta.html?id=${objJSON.id}"><h2>` + objJSON.nombre + `</h2></a>
 				</div>
 				<div class="content">
 				<img src='fotos/`+ 
-				objJSON.FILAS[k].fichero 
+				objJSON.fichero 
 				+`'alt="foto de la receta">
-				<p><a href="buscar.html?type=1&a=`+objJSON.FILAS[k].autor+`"><strong><span class="icon-user"></span>`+
-				objJSON.FILAS[k].autor
+				<p><a href="buscar.html?type=1&a=`+objJSON.autor+`"><strong><span class="icon-user"></span>`+
+				objJSON.autor
 				+`</strong></a></p>
 				<span class="icon-calendar"></span><time datetime="`+
-				objJSON.FILAS[k].fecha
+				objJSON.fecha
 				+`">`+
-				objJSON.FILAS[k].fecha
+				objJSON.fecha
 				+`</time>
 				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo, exercitationem, accusamus. Possimus odio vel voluptas corporis, voluptate deserunt laudantium pariatur, odit sit eaque quisquam maiores voluptatibus id sequi. Itaque deleniti, officia odit repellat ad! Sed doloribus dolores cumque. Quae, cumque.</p>
 					<ul>
-						<li><span class="icon-thumbs-up"></span>`+objJSON.FILAS[k].positivos+`</li>
-						<li><span class="icon-thumbs-down"></span>`+objJSON.FILAS[k].negativos+`</li> 
-						<li><span class="icon-comment"></span>`+objJSON.FILAS[k].comentarios+`</li>
+						<li><span class="icon-thumbs-up"></span>`+objJSON.positivos+`</li>
+						<li><span class="icon-thumbs-down"></span>`+objJSON.negativos+`</li> 
+						<li><span class="icon-comment"></span>`+objJSON.comentarios+`</li>
 					</ul>		
 				</div>
 				</article>`;
 			}
 
-			c_seccion.innerHTML += 
+				
+		);
+
+		c_seccion.innerHTML += 
 			`<ul>
 				<li><button>Primera</button></li>
 				<li><button onclick="pedirRecetasFetch(-1);"><span class="icon-left-big"></span></button></li>
 				<li><button>`+(Number(sessionStorage.getItem('actual'))+1)+`</button></li>
 				<li><button onclick="pedirRecetasFetch(1);"><span class="icon-right-big"></span></button></li>
 				<li><button>Última</button></li>
-			</ul>`	
-		});
+			</ul>`
 	}, 
 	function(error){
 		console.log('ERORR');
 	});
+});
 }
+
 
 
 
@@ -298,6 +301,7 @@ function Login(form)
 		{
 			clave = r.clave;
 			sessionStorage.setItem('usuario',xhr.responseText);
+			sessionStorage.setItem('clave', clave);
 			window.location.replace("./index.html");
 		}
 	};
@@ -422,6 +426,12 @@ function BuscarPorFormulario(form)
 	}
 	//Terminamos de procesar todos los datos de búsqueda
 	console.log(url);
+
+	if(first_par == true)
+	{
+		pedirRecetasFetch(0);
+	}
+
 
 	//Procesamos la petición GET con la URL
 	fetch(url).then(function(response){
@@ -561,6 +571,33 @@ function checkUsr(usrname)
 
 	return false;
 }
+
+function loadReceipt()
+{
+	console.log('Allá vamos');
+
+	let valor = getvariablesURL('id');
+	console.log(valor);
+
+	let url = 'rest/receta/' + valor;
+
+	fetch(url).then(function(response)
+		{
+			response.json().then(function(objJSON)
+				{
+					console.log(objJSON);
+				});
+		},
+		function(error)
+		{
+
+		});
+
+
+
+}
+
+//url_string = window.location.href
 
 /*
 function dejarComentario()
