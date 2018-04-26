@@ -67,56 +67,19 @@ function searchByAuthor()
 		c_seccion = document.querySelector('#receipts');
 
 	fetch(c_url).then(function(response){
-		response.text().then(function(texto)
+		response.json().then(function(texto)
 		{
-			let objJSON = JSON.parse(texto);
-			console.log(objJSON.FILAS.length);
-			c_seccion.innerHTML = null;
-			for(let k in objJSON.FILAS)
-			{
-				c_seccion.innerHTML += 
-				`<article>
-				<div>
-				<a href="receta.html"><h2>` + objJSON.FILAS[k].nombre + `</h2></a>
-				</div>
-				<div class="content">
-				<img src='fotos/`+ 
-				objJSON.FILAS[k].fichero 
-				+`'alt="foto de la receta">
-				<p><a href="buscar.html?type=1&a=`+objJSON.FILAS[k].autor+`"><strong><span class="icon-user"></span>`+
-				objJSON.FILAS[k].autor
-				+`</strong></a></p>
-				<span class="icon-calendar"></span><time datetime="`+
-				objJSON.FILAS[k].fecha
-				+`">`+
-				objJSON.FILAS[k].fecha
-				+`</time>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo, exercitationem, accusamus. Possimus odio vel voluptas corporis, voluptate deserunt laudantium pariatur, odit sit eaque quisquam maiores voluptatibus id sequi. Itaque deleniti, officia odit repellat ad! Sed doloribus dolores cumque. Quae, cumque.</p>
-					<ul>
-						<li><span class="icon-thumbs-up"></span>`+objJSON.FILAS[k].positivos+`</li>
-						<li><span class="icon-thumbs-down"></span>`+objJSON.FILAS[k].negativos+`</li> 
-						<li><span class="icon-comment"></span>`+objJSON.FILAS[k].comentarios+`</li>
-					</ul>		
-				</div>
-				</article>`;
-			}
+			console.log(texto);
+			writeReceiptObject(texto);	
+		},
 
-			c_seccion.innerHTML += 
-			`<ul>
-				<li><button>Primera</button></li>
-				<li><button onclick="pedirRecetasFetch(-1);"><span class="icon-left-big"></span></button></li>
-				<li><button>`+(Number(sessionStorage.getItem('actual'))+1)+`</button></li>
-				<li><button onclick="pedirRecetasFetch(1);"><span class="icon-right-big"></span></button></li>
-				<li><button>Última</button></li>
-			</ul>`	
-		});
-	}, 
+		
 	function(error){
 		console.log('ERORR');
 	});
-
-
+});
 }
+
 
 function QuickSearch(form)
 {
@@ -127,47 +90,8 @@ function QuickSearch(form)
 	fetch(c_url).then(function(response){
 		response.json().then(function(texto)
 		{
-			texto.FILAS.forEach(function(objJSON)
-			{
-				c_seccion.innerHTML += 
-				`<article>
-				<div>
-				<a href="receta.html"><h2>` + objJSON.nombre + `</h2></a>
-				</div>
-				<div class="content">
-				<img src='fotos/`+ 
-				objJSON.fichero 
-				+`'alt="foto de la receta">
-				<p><a href="buscar.html?type=1&a=`+objJSON.autor+`"><strong><span class="icon-user"></span>`+
-				objJSON.autor
-				+`</strong></a></p>
-				<span class="icon-calendar"></span><time datetime="`+
-				objJSON.fecha
-				+`">`+
-				objJSON.fecha
-				+`</time>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo, exercitationem, accusamus. Possimus odio vel voluptas corporis, voluptate deserunt laudantium pariatur, odit sit eaque quisquam maiores voluptatibus id sequi. Itaque deleniti, officia odit repellat ad! Sed doloribus dolores cumque. Quae, cumque.</p>
-					<ul>
-						<li><span class="icon-thumbs-up"></span>`+objJSON.positivos+`</li>
-						<li><span class="icon-thumbs-down"></span>`+objJSON.negativos+`</li> 
-						<li><span class="icon-comment"></span>`+objJSON.comentarios+`</li>
-					</ul>		
-				</div>
-				</article>`;
-			}
-
-				
-		);
-
-		c_seccion.innerHTML += 
-			`<ul>
-				<li><button>Primera</button></li>
-				<li><button onclick="pedirRecetasFetch(-1);"><span class="icon-left-big"></span></button></li>
-				<li><button>`+(Number(sessionStorage.getItem('actual'))+1)+`</button></li>
-				<li><button onclick="pedirRecetasFetch(1);"><span class="icon-right-big"></span></button></li>
-				<li><button>Última</button></li>
-			</ul>`
-	}, 
+			writeReceiptObject(texto);	
+		}, 
 	function(error){
 		console.log('ERORR');
 	});
@@ -198,38 +122,9 @@ function loadResearch()
 	}	
 }
 
-
-
-function pedirRecetasFetch(increment)
+function writeReceiptObject(texto)
 {
-	if(sessionStorage.getItem('actual') == null)
-	{	
-		m_pagActual += increment;
-		sessionStorage.setItem('actual', m_pagActual);
-	}
-	else
-	{
-		if(Number(sessionStorage.getItem('actual'))+increment>=0)
-			sessionStorage.setItem('actual', Number(sessionStorage.getItem('actual'))+increment);
-		else
-			return;
-	}
-
-	console.log(increment);
-	console.log(sessionStorage.getItem('actual'));
-	let c_url = 'rest/receta/?pag='+sessionStorage.getItem('actual')+'&lpag=6'
-		c_seccion = document.querySelector('#receipts');
-
-		c_seccion.innerHTML = null;
-	fetch(c_url).then(function(response){
-		response.json().then(function(texto)
-		{
-			if (texto.FILAS.length == 0) 
-			{
-				pedirRecetasFetch(-1);
-				return;
-			}
-			texto.FILAS.forEach(function(objJSON)
+	texto.FILAS.forEach(function(objJSON)
 			{
 				c_seccion.innerHTML += 
 				`<article>
@@ -256,20 +151,68 @@ function pedirRecetasFetch(increment)
 					</ul>		
 				</div>
 				</article>`;
-			}
+			});
 
-				
-		);
-
-		c_seccion.innerHTML += 
+	c_seccion.innerHTML += 
 			`<ul>
-				<li><button>Primera</button></li>
-				<li><button onclick="pedirRecetasFetch(-1);"><span class="icon-left-big"></span></button></li>
-				<li><button>`+(Number(sessionStorage.getItem('actual'))+1)+`</button></li>
-				<li><button onclick="pedirRecetasFetch(1);"><span class="icon-right-big"></span></button></li>
-				<li><button>Última</button></li>
+				<li><button onclick="FirstPag();">Primera</button></li>
+				<li><button onclick="DecrementPag();"><span class="icon-left-big"></span></button></li>
+				<li><button>`+(Number(localStorage.getItem('actual'))+1)+` de `+localStorage.getItem("paginas")+`</button></li>
+				<li><button onclick="IncrementPag();"><span class="icon-right-big"></span></button></li>
+				<li><button onclick="LastPag();">Última</button></li>
 			</ul>`
-	}, 
+}
+
+function LastPag()
+{
+	if(localStorage.getItem("actual")!=localStorage.getItem("paginas")-1)
+	{
+		pedirRecetasFetch(localStorage.getItem("paginas")-1)
+	}
+}
+
+function FirstPag()
+{
+	if(localStorage.getItem("actual")!=0)
+		pedirRecetasFetch(0);
+}
+
+function IncrementPag()
+{
+	if(localStorage.getItem("actual") + 1 <= localStorage.getItem("paginas")-1)
+		pedirRecetasFetch(localStorage.getItem("actual") + 1);
+}
+
+function DecrementPag()
+{
+	if(localStorage.getItem("actual") - 1 >= 0)
+		pedirRecetasFetch(localStorage.getItem("actual") - 1);
+}
+
+function pedirRecetasFetch(pag)
+{
+	console.log(pag);
+	console.log(sessionStorage.getItem('actual'));
+	let c_url = 'rest/receta/?pag='+pag+'&lpag=6'
+		c_seccion = document.querySelector('#receipts');
+
+		c_seccion.innerHTML = null;
+		fetch(c_url).then(function(response){
+		response.json().then(function(texto)
+		{
+			if (texto.FILAS.length == 0) 
+			{
+				pedirRecetasFetch(-1);
+				return;
+			}
+			writeReceiptObject(texto);
+			var totalpaginas = Math.ceil(texto.TOTAL_COINCIDENCIAS/6);
+			console.log(totalpaginas);
+			localStorage.setItem("paginas", totalpaginas);
+			localStorage.setItem("actual", pag);	
+		},
+
+		
 	function(error){
 		console.log('ERORR');
 	});
@@ -318,68 +261,32 @@ function BuscarPorFormulario(form)
 {
 	let formulario = new FormData(form);
 	c_seccion = document.querySelector('#receipts');
-	let url = 'rest/receta/?';
-    
-    var first_par = true;
+	let url = 'rest/receta/?pag=0&lpag=6';
 	
 	//Procesamos los datos de la búsqueda
 	if(formulario.get('nombre') != "")
 	{
-		if(first_par)
-		{
-			url += 'n=' + formulario.get('nombre');
-			first_par = false;
-		}
-		else
-			url += '&n=' + formulario.get('nombre');
-		
+		url += '&n=' + formulario.get('nombre');	
 	}
 	if(formulario.get('ingredientes') != "")
 	{
-		if(first_par)
-		{
-			url += 'i=' + formulario.get('ingredientes');
-			first_par = false;
-		}
-		else
-			url += '&i=' + formulario.get('ingredientes');
-		
+
+		url += '&i=' + formulario.get('ingredientes');	
 	}
 	
 	if(formulario.get('dificultad') != "")
 	{
-		if(first_par)
-		{
-			url += 'd=' + formulario.get('dificultad');
-			first_par = false;
-		}
-		else
-			url += '&d=' + formulario.get('dificultad');
-		
+		url += '&d=' + formulario.get('dificultad');
 	}
 
 	if(formulario.get('comensales') != "")
 	{
-		if(first_par)
-		{
-			url += 'c=' + formulario.get('comensales');
-			first_par = false;
-		}
-		else
-			url += '&c=' + formulario.get('comensales');
-		
+		url += '&c=' + formulario.get('comensales');
 	}
 
 	if(formulario.get('autor') != "")
 	{
-		if(first_par)
-		{
-			url += 'a=' + formulario.get('autor');
-			first_par = false;
-		}
-		else
-			url += '&a=' + formulario.get('autor');
-		
+		url += '&a=' + formulario.get('autor');
 	}
 
 	if(formulario.get('mintiempo')!="" && formulario.get('maxtiempo')!="")
@@ -387,51 +294,25 @@ function BuscarPorFormulario(form)
 		//Toca comparar los tiempos
 		if(Number(formulario.get('maxtiempo'))>Number(formulario.get('mintiempo')))
 		{
-			if(first_par)
-			{
-				url += 'di=' + formulario.get('mintiempo');
-				first_par = false;
-			}
-			else
-				url += '&di=' + formulario.get('mintiempo');
-			
+			url += '&di=' + formulario.get('mintiempo');
 			url+= '&df=' + formulario.get('maxtiempo');
-			
 		}
 	}
 	else
 	{
 		if(formulario.get('mintiempo')!="")
 		{
-			if(first_par)
-			{
-				url += 'di=' + formulario.get('mintiempo');
-				first_par = false;
-			}
-			else
-				url += '&di=' + formulario.get('mintiempo');
+			url += '&di=' + formulario.get('mintiempo');
 		}
 
 		if(formulario.get('maxtiempo')!="")
 		{
-			if(first_par)
-			{
-				url += 'df=' + formulario.get('maxtiempo');
-				first_par = false;
-			}
-			else
-				url += '&df=' + formulario.get('maxtiempo');
+			url += '&df=' + formulario.get('maxtiempo');
 		}
 
 	}
 	//Terminamos de procesar todos los datos de búsqueda
 	console.log(url);
-
-	if(first_par == true)
-	{
-		pedirRecetasFetch(0);
-	}
-
 
 	//Procesamos la petición GET con la URL
 	fetch(url).then(function(response){
@@ -447,44 +328,8 @@ function BuscarPorFormulario(form)
 			}
 			else
 			{
-				for(let k in objJSON.FILAS)
-				{
-					c_seccion.innerHTML += 
-					`<article>
-					<div>
-					<a href="receta.html"><h2>` + objJSON.FILAS[k].nombre + `</h2></a>
-					</div>
-					<div class="content">
-					<img src='fotos/`+ 
-					objJSON.FILAS[k].fichero 
-					+`'alt="foto de la receta">
-					<p><a href="buscar.html?type=1&a=`+objJSON.FILAS[k].autor+`"><strong><span class="icon-user"></span>`+
-					objJSON.FILAS[k].autor
-					+`</strong></a></p>
-					<span class="icon-calendar"></span><time datetime="`+
-					objJSON.FILAS[k].fecha
-					+`">`+
-					objJSON.FILAS[k].fecha
-					+`</time>
-					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo, exercitationem, accusamus. Possimus odio vel voluptas corporis, voluptate deserunt laudantium pariatur, odit sit eaque quisquam maiores voluptatibus id sequi. Itaque deleniti, officia odit repellat ad! Sed doloribus dolores cumque. Quae, cumque.</p>
-						<ul>
-							<li><span class="icon-thumbs-up"></span>`+objJSON.FILAS[k].positivos+`</li>
-							<li><span class="icon-thumbs-down"></span>`+objJSON.FILAS[k].negativos+`</li> 
-							<li><span class="icon-comment"></span>`+objJSON.FILAS[k].comentarios+`</li>
-						</ul>		
-					</div>
-					</article>`;
-				}
-
-				c_seccion.innerHTML += 
-				`<ul>
-					<li><button>Primera</button></li>
-					<li><button onclick="pedirRecetasFetch(-1);"><span class="icon-left-big"></span></button></li>
-					<li><button>`+(Number(sessionStorage.getItem('actual'))+1)+`</button></li>
-					<li><button onclick="pedirRecetasFetch(1);"><span class="icon-right-big"></span></button></li>
-					<li><button>Última</button></li>
-				</ul>`
-			}	
+				writeReceiptObject(texto);
+			}
 		});
 	}, 
 	function(error){
