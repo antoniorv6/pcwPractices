@@ -433,6 +433,7 @@ function loadReceipt()
 	let url = 'rest/receta/' + valor;
 
 	let fichareceta = document.querySelector(".fichareceta");
+	let valoraciones = document.querySelector(".valoraciones");
 
 	fetch(url).then(function(response)
 		{
@@ -469,30 +470,53 @@ function loadReceipt()
 
 								<p> <span class="icon-food"></span> 4</p>
 							</article>
-		<article>
-			<h2>Ingredientes</h2>
-			<ul id= "ingredients">
-			</ul>
-		</article>
-		<article>	
-					<h2>Elaboración:</h2>
-					<p>${objJSON.elaboracion}</p>
-		</article>`;
+							<article>
+								<h2>Ingredientes</h2>
+								<ul id= "ingredients">
+								</ul>
+							</article>
+							<article>	
+										<h2>Elaboración:</h2>
+										<p>${objJSON.elaboracion}</p>
+							</article>`;
 
-		LoadReceiptPhotos(valor);
-		LoadActualPhoto();
-		LoadIngredients(valor);
-		LoadComments(valor);
+							if(sessionStorage.getItem("usuario")!=null)
+							{
+								valoraciones.innerHTML = 
+								`<article class="valoracion">
+									<h2>¡Deja tu opinión!</h2>
+										<div>
+											<button onclick="Evaluate(1);"><span class="icon-thumbs-up"></span></button>
+											<button onclick="Evaluate(0);"><span class="icon-thumbs-down"></span></button>
+										</div>
+									<br>
+
+									<form onsubmit="return postComment(this);">
+										
+										<label>Título del comentario:</label>
+										<input type="text" name="titulo" maxlength="50" required>
+
+										<label>Comentario:</label>
+										<textarea required name="texto" rows="5"></textarea>
+										
+										<input type="submit" value="Enviar comentario">
+
+									</form>
+								
+								</article>`;
+							}
+
 					});
+					LoadReceiptPhotos(valor);
+					LoadIngredients(valor);
+					LoadComments(valor);
 				});
 		},
 		function(error)
 		{
 			console.log("El server funciona jejejejejej");
 		});
-
-
-
+		
 }
 
 function LoadReceiptPhotos(id)
@@ -513,6 +537,7 @@ function LoadReceiptPhotos(id)
 					console.log(localStorage.getItem("photosCounter"));
 					console.log(localStorage.getItem("showingPhoto"));
 
+					LoadActualPhoto();
 
 				});
 		},
@@ -630,34 +655,56 @@ function LoadComments(id)
 		});
 }
 
-
-
-
-//url_string = window.location.href
-
-/*
-function dejarComentario()
+function postComment(form)
 {
+	let id = getvariablesURL('id');
 	let xhr = new XMLHttpRequest(),
-		url = 'rest/receta/1/comentario/',
-		fd = new FormData(),
-		usu;
-		
-		if(!sessionStorage.getItem('usuario'))
-			return false;
+		url = 'rest/receta/'+id+'/comentario/',
+		fd = new FormData(form),
 		usu = JSON.parse(sessionStorage.getItem('usuario'));
+		
+	if(!sessionStorage.getItem('usuario'))
+		return false;
 
-
-	fd.append('titulo', 'Hola, soy Luján');
-	fd.append('texto', 'Odio PCW');
 	fd.append('l', usu.login);
 
 	xhr.open('POST',url,true);
+	
 	xhr.onload = function()
 	{
 		console.log(xhr.responseText);
+		loadReceipt();
 	};
+
 	xhr.setRequestHeader('Authorization', usu.clave);
 	xhr.send(fd);
+
+	return false;
 }
-*/
+
+function Evaluate(valoracion)
+{
+	let id = getvariablesURL('id');
+	let xhr = new XMLHttpRequest(),
+		url = 'rest/receta/'+id+'/voto/'+valoracion,
+		usu = JSON.parse(sessionStorage.getItem('usuario'));
+		fd = new FormData();
+
+
+	if(!sessionStorage.getItem('usuario'))
+		return false;
+
+	fd.append('l', usu.login);
+
+	xhr.open('POST',url,true);
+	
+	xhr.onload = function()
+	{
+		loadReceipt();
+	};
+
+	xhr.setRequestHeader('Authorization', usu.clave);
+	xhr.send(fd);
+	return false;
+}
+
