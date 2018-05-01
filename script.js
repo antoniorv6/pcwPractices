@@ -122,8 +122,9 @@ function loadResearch()
 	}	
 }
 
-function writeReceiptObject(texto)
+function writeReceiptObject(texto, pagina)
 {
+	console.log(texto);
 	texto.FILAS.forEach(function(objJSON)
 			{
 				c_seccion.innerHTML += 
@@ -143,7 +144,7 @@ function writeReceiptObject(texto)
 				+`">`+
 				objJSON.fecha
 				+`</time>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo, exercitationem, accusamus. Possimus odio vel voluptas corporis, voluptate deserunt laudantium pariatur, odit sit eaque quisquam maiores voluptatibus id sequi. Itaque deleniti, officia odit repellat ad! Sed doloribus dolores cumque. Quae, cumque.</p>
+				<p>`+objJSON.elaboracion+`</p>
 					<ul>
 						<li><span class="icon-thumbs-up"></span>`+objJSON.positivos+`</li>
 						<li><span class="icon-thumbs-down"></span>`+objJSON.negativos+`</li> 
@@ -167,32 +168,42 @@ function LastPag()
 {
 	if(localStorage.getItem("actual")!=localStorage.getItem("paginas")-1)
 	{
-		pedirRecetasFetch(localStorage.getItem("paginas")-1)
+		localStorage.setItem("actual", Number(localStorage.getItem("paginas")-1));
+		pedirRecetasFetch(localStorage.getItem("actual"));
 	}
 }
 
 function FirstPag()
 {
 	if(localStorage.getItem("actual")!=0)
+	{
+		localStorage.setItem("actual", 0);
 		pedirRecetasFetch(0);
+	}
 }
 
 function IncrementPag()
 {
 	if(localStorage.getItem("actual") + 1 <= localStorage.getItem("paginas")-1)
-		pedirRecetasFetch(localStorage.getItem("actual") + 1);
+	{
+		localStorage.setItem("actual", Number(localStorage.getItem("actual")+1));
+		pedirRecetasFetch(localStorage.getItem("actual"));
+	}
 }
 
 function DecrementPag()
 {
 	if(localStorage.getItem("actual") - 1 >= 0)
-		pedirRecetasFetch(localStorage.getItem("actual") - 1);
+	{
+		localStorage.setItem("actual", Number(localStorage.getItem("actual")-1));
+		pedirRecetasFetch(localStorage.getItem("actual"));
+	}
 }
 
 function pedirRecetasFetch(pag)
 {
 	console.log(pag);
-	console.log(sessionStorage.getItem('actual'));
+	console.log("SessionStorage: " + localStorage.getItem('actual'));
 	let c_url = 'rest/receta/?pag='+pag+'&lpag=6'
 		c_seccion = document.querySelector('#receipts');
 
@@ -200,11 +211,6 @@ function pedirRecetasFetch(pag)
 		fetch(c_url).then(function(response){
 		response.json().then(function(texto)
 		{
-			if (texto.FILAS.length == 0) 
-			{
-				pedirRecetasFetch(-1);
-				return;
-			}
 			writeReceiptObject(texto);
 			var totalpaginas = Math.ceil(texto.TOTAL_COINCIDENCIAS/6);
 			console.log(totalpaginas);
@@ -426,21 +432,206 @@ function loadReceipt()
 
 	let url = 'rest/receta/' + valor;
 
+	let fichareceta = document.querySelector(".fichareceta");
+
 	fetch(url).then(function(response)
 		{
-			response.json().then(function(objJSON)
+			response.json().then(function(texto)
 				{
-					console.log(objJSON);
+					fichareceta.innerHTML = null;
+					texto.FILAS.forEach(function(objJSON)
+					{
+						console.log(localStorage.getItem("showingPhoto"));
+						fichareceta.innerHTML +=
+						`<h2>${objJSON.nombre}</h2>
+							<article>
+								<h2><a href="receta.html">Datos generales</a></h2>
+									<ul>
+										<li><button onclick="PhotoBefore()"><span class="icon-left-big"></span></button></li>
+										<li id="photo"></li>
+										<li><button onclick="NextPhoto();"><span class="icon-right-big"></span></button></li>
+										<p id="description"></p>
+									</ul>
+									<ul>
+											<li><span class="icon-thumbs-up"></span>${objJSON.positivos}</li>
+											<li><span class="icon-thumbs-down"></span>${objJSON.negativos}</li> 
+											<li><span class="icon-comment"></span>${objJSON.comentarios}</li>
+									</ul>
+							</article>
+							<article>
+								<a href="buscar.html?type=1&a=`+objJSON.autor+`"><h4><span class="icon-user"></span>${objJSON.autor}</h4></a>
+								<p><time datetime="2017-02-14 20:00"><span class="icon-calendar"></span> 14-02-2017 20:00 </time></p>
+								<p>Dificultad: 
+									<span class="icon-fire"></span>
+									<span class="icon-fire"></span>
+									<span class="icon-fire"></span> 
+								</p>
+
+								<p> <span class="icon-food"></span> 4</p>
+							</article>
+		<article>
+			<h2>Ingredientes</h2>
+			<ul id= "ingredients">
+			</ul>
+		</article>
+		<article>	
+					<h2>Elaboración:</h2>
+					<p>${objJSON.elaboracion}</p>
+		</article>`;
+
+		LoadReceiptPhotos(valor);
+		LoadActualPhoto();
+		LoadIngredients(valor);
+		LoadComments(valor);
+					});
 				});
 		},
 		function(error)
 		{
-
+			console.log("El server funciona jejejejejej");
 		});
 
 
 
 }
+
+function LoadReceiptPhotos(id)
+{
+	let url = 'rest/receta/'+id+'/fotos';
+	let lielement = document.querySelector("#photo");
+	fetch(url).then(function(response)
+		{
+			response.json().then(function(texto)
+				{
+					console.log(texto.FILAS);
+					localStorage.setItem("actualPhotos", JSON.stringify(texto.FILAS));
+					localStorage.setItem("photosCounter", 0);
+					localStorage.setItem("showingPhoto", texto.FILAS[0].fichero);
+					localStorage.setItem("showingPhotoDescription", texto.FILAS[0].texto);
+
+					console.log(localStorage.getItem("actualPhotos"));
+					console.log(localStorage.getItem("photosCounter"));
+					console.log(localStorage.getItem("showingPhoto"));
+
+
+				});
+		},
+		function(error)
+		{
+			console.log("Erroooor");
+		});
+
+}
+
+function NextPhoto(increment)
+{
+	var counter = Number(localStorage.getItem("photosCounter"));
+
+	let photos = JSON.parse(localStorage.getItem("actualPhotos"));
+
+	if(counter+1 < photos.length)
+	{
+		localStorage.setItem("photosCounter", counter + 1);
+		localStorage.setItem("showingPhoto", photos[counter+1].fichero);
+		localStorage.setItem("showingPhotoDescription", photos[counter+1].texto);
+	}
+	else
+	{
+		localStorage.setItem("photosCounter", 0);
+		localStorage.setItem("showingPhoto", photos[0].fichero);
+		localStorage.setItem("showingPhotoDescription", photos[0].texto);
+	}
+
+	LoadActualPhoto();
+}
+
+function PhotoBefore()
+{
+	var counter = Number(localStorage.getItem("photosCounter"));
+
+	let photos = JSON.parse(localStorage.getItem("actualPhotos"));
+
+	if(counter-1 >= 0)
+	{
+		localStorage.setItem("photosCounter", counter - 1);
+		localStorage.setItem("showingPhoto", photos[counter-1].fichero);
+		localStorage.setItem("showingPhotoDescription", photos[counter-1].texto);
+	}
+	else
+	{
+		localStorage.setItem("photosCounter", photos.length-1);
+		localStorage.setItem("showingPhoto", photos[photos.length-1].fichero);
+		localStorage.setItem("showingPhotoDescription", photos[photos.length-1].texto);
+	}
+
+	LoadActualPhoto();
+}
+
+function LoadActualPhoto()
+{
+	let lielementphoto = document.querySelector("#photo");
+	let lielementdescription = document.querySelector("#description");
+	lielementphoto.innerHTML = `<img src="fotos/${localStorage.getItem("showingPhoto")}" alt="foto de la receta">`;
+	lielementdescription.innerHTML = localStorage.getItem("showingPhotoDescription");
+
+}
+
+function LoadIngredients(id)
+{
+	let url = 'rest/receta/'+id+'/ingredientes';
+	let listaIngredientes = document.querySelector('#ingredients');
+
+	listaIngredientes.innerHTML = null;
+
+	fetch(url).then(function(response)
+		{
+			response.json().then(function(texto)
+				{
+					texto.FILAS.forEach(function(objJSON)
+					{
+						listaIngredientes.innerHTML += `<li>${objJSON.nombre}</li>`;
+					});
+				});
+		},
+		function(error)
+		{
+			console.log("Erroooor");
+		});
+}
+
+function LoadComments(id)
+{
+	let url = 'rest/receta/'+id+'/comentarios';
+	let listaComentarios = document.querySelector('.comentarios');
+
+	listaComentarios.innerHTML = null;
+
+	fetch(url).then(function(response)
+		{
+			response.json().then(function(texto)
+				{
+					texto.FILAS.forEach(function(objJSON)
+					{
+						console.log(objJSON);
+						listaComentarios.innerHTML += 
+						`<article>
+							<h3>${objJSON.titulo}</h3>
+							<p><span class="icon-user"></span>${objJSON.autor}</p>
+							<span class="icon-calendar"></span><time datetime="${objJSON.fecha}">${objJSON.fecha}</time>
+							<p>${objJSON.texto}</p>
+							
+						</article>`;
+					});
+				});
+		},
+		function(error)
+		{
+			console.log("Erroooor");
+		});
+}
+
+
+
 
 //url_string = window.location.href
 
