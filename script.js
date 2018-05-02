@@ -433,7 +433,6 @@ function loadReceipt()
 	let url = 'rest/receta/' + valor;
 
 	let fichareceta = document.querySelector(".fichareceta");
-	let valoraciones = document.querySelector(".valoraciones");
 
 	fetch(url).then(function(response)
 		{
@@ -461,14 +460,10 @@ function loadReceipt()
 							</article>
 							<article>
 								<a href="buscar.html?type=1&a=`+objJSON.autor+`"><h4><span class="icon-user"></span>${objJSON.autor}</h4></a>
-								<p><time datetime="2017-02-14 20:00"><span class="icon-calendar"></span> 14-02-2017 20:00 </time></p>
-								<p>Dificultad: 
-									<span class="icon-fire"></span>
-									<span class="icon-fire"></span>
-									<span class="icon-fire"></span> 
+								<p><time datetime="${objJSON.fecha}"><span class="icon-calendar"></span> ${objJSON.fecha} </time></p>
+								<p>Dificultad:${objJSON.dificultad}
 								</p>
-
-								<p> <span class="icon-food"></span> 4</p>
+								<p> <span class="icon-food"></span>${objJSON.comensales}</p>
 							</article>
 							<article>
 								<h2>Ingredientes</h2>
@@ -482,28 +477,13 @@ function loadReceipt()
 
 							if(sessionStorage.getItem("usuario")!=null)
 							{
-								valoraciones.innerHTML = 
-								`<article class="valoracion">
-									<h2>¡Deja tu opinión!</h2>
-										<div>
-											<button onclick="Evaluate(1);"><span class="icon-thumbs-up"></span></button>
-											<button onclick="Evaluate(0);"><span class="icon-thumbs-down"></span></button>
-										</div>
-									<br>
-
-									<form onsubmit="return postComment(this);">
-										
-										<label>Título del comentario:</label>
-										<input type="text" name="titulo" maxlength="50" required>
-
-										<label>Comentario:</label>
-										<textarea required name="texto" rows="5"></textarea>
-										
-										<input type="submit" value="Enviar comentario">
-
-									</form>
-								
-								</article>`;
+								LoadCommentsPage();
+							}
+							else
+							{
+								let valoraciones = document.querySelector(".valoraciones");
+								valoraciones.innerHTML = `<article class="valoracion"><p>Para poder hacer valoraciones,
+								debes estar <a href="login.html">logueado</a></p></article>`;
 							}
 
 					});
@@ -517,6 +497,24 @@ function loadReceipt()
 			console.log("El server funciona jejejejejej");
 		});
 		
+}
+
+function LoadCommentsPage()
+{
+	let valoraciones = document.querySelector(".valoraciones");
+	let url = './formulario.html';
+	fetch(url).then(function(response)
+		{
+			response.text().then(function(formulario)
+			{
+				valoraciones.innerHTML = formulario;
+			});
+		},
+		function(error)
+		{
+			console.log("Erroooor");
+		});
+
 }
 
 function LoadReceiptPhotos(id)
