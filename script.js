@@ -706,3 +706,35 @@ function Evaluate(valoracion)
 	return false;
 }
 
+function AddPhotoInput()
+{
+	let space = document.querySelector("#photosplace");
+
+	space.innerHTML += 
+	`<label for="fotos">
+	 	<img id="foto" src="./img/upload-empty.png" alt="foto1">
+	 </label>
+	 <input type="file" name="fotos" onchange = "ChangeImgSource(event);" title="Subir">
+	 <button onclick="return EliminateSpace();">Eliminar</button>
+	 <textarea name="1" cols="20" rows="5" maxlength="250" placeholder="Añade una descripción de no más de 250 caracteres"></textarea>`;
+
+	 return false;
+}
+
+function PostNewRecepee(form)
+{
+	let formulario = new FormData(form);
+
+	console.log(formulario);
+
+	return false;
+}
+
+function ChangeImgSource(source)
+{
+	let image = document.querySelector("#foto");
+
+	console.log(image);
+
+}
+
