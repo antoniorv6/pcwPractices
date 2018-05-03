@@ -90,6 +90,7 @@ function QuickSearch(form)
 	fetch(c_url).then(function(response){
 		response.json().then(function(texto)
 		{
+			c_seccion.innerHTML = null;
 			writeReceiptObject(texto);	
 		}, 
 	function(error){
@@ -135,7 +136,7 @@ function writeReceiptObject(texto, pagina)
 				<div class="content">
 				<img src='fotos/`+ 
 				objJSON.fichero 
-				+`'alt="foto de la receta">
+				+`'alt="foto de la receta" width = '300' height = '300'>
 				<p><a href="buscar.html?type=1&a=`+objJSON.autor+`"><strong><span class="icon-user"></span>`+
 				objJSON.autor
 				+`</strong></a></p>
@@ -144,7 +145,6 @@ function writeReceiptObject(texto, pagina)
 				+`">`+
 				objJSON.fecha
 				+`</time>
-				<p>`+objJSON.elaboracion+`</p>
 					<ul>
 						<li><span class="icon-thumbs-up"></span>`+objJSON.positivos+`</li>
 						<li><span class="icon-thumbs-down"></span>`+objJSON.negativos+`</li> 
@@ -265,6 +265,7 @@ function Login(form)
 
 function BuscarPorFormulario(form)
 {
+	var flag = false;
 	let formulario = new FormData(form);
 	c_seccion = document.querySelector('#receipts');
 	let url = 'rest/receta/?pag=0&lpag=6';
@@ -272,26 +273,30 @@ function BuscarPorFormulario(form)
 	//Procesamos los datos de la búsqueda
 	if(formulario.get('nombre') != "")
 	{
+		flag = true;
 		url += '&n=' + formulario.get('nombre');	
 	}
 	if(formulario.get('ingredientes') != "")
 	{
-
+		flag = true;
 		url += '&i=' + formulario.get('ingredientes');	
 	}
 	
 	if(formulario.get('dificultad') != "")
 	{
+		flag = true;
 		url += '&d=' + formulario.get('dificultad');
 	}
 
 	if(formulario.get('comensales') != "")
 	{
+		flag = true;
 		url += '&c=' + formulario.get('comensales');
 	}
 
 	if(formulario.get('autor') != "")
 	{
+		flag = true;
 		url += '&a=' + formulario.get('autor');
 	}
 
@@ -302,6 +307,7 @@ function BuscarPorFormulario(form)
 		{
 			url += '&di=' + formulario.get('mintiempo');
 			url+= '&df=' + formulario.get('maxtiempo');
+			flag = true;
 		}
 	}
 	else
@@ -309,38 +315,43 @@ function BuscarPorFormulario(form)
 		if(formulario.get('mintiempo')!="")
 		{
 			url += '&di=' + formulario.get('mintiempo');
+			flag = true;
 		}
 
 		if(formulario.get('maxtiempo')!="")
 		{
 			url += '&df=' + formulario.get('maxtiempo');
+			flag = true;
 		}
 
 	}
 	//Terminamos de procesar todos los datos de búsqueda
 	console.log(url);
 
+	if(flag)
+	{
 	//Procesamos la petición GET con la URL
-	fetch(url).then(function(response){
-		response.text().then(function(texto)
-		{
-			let objJSON = JSON.parse(texto);
-			console.log(objJSON.FILAS.length);
-			c_seccion.innerHTML = null;
+		fetch(url).then(function(response){
+			response.text().then(function(texto)
+			{
+				let objJSON = JSON.parse(texto);
+				console.log(objJSON.FILAS.length);
+				c_seccion.innerHTML = null;
 
-			if(objJSON.FILAS.length == 0)
-			{
-				c_seccion.innerHTML += '<h3 class="errorbusqueda">NO SE HA ENCONTRADO NINGUNA RECETA</h3>';
-			}
-			else
-			{
-				writeReceiptObject(texto);
-			}
+				if(objJSON.FILAS.length == 0)
+				{
+					c_seccion.innerHTML += '<h3 class="errorbusqueda">NO SE HA ENCONTRADO NINGUNA RECETA</h3>';
+				}
+				else
+				{
+					writeReceiptObject(objJSON);
+				}
+			});
+		}, 
+		function(error){
+			console.log('ERORR');
 		});
-	}, 
-	function(error){
-		console.log('ERORR');
-	});
+	}
 
 	return false;
 }
@@ -747,9 +758,10 @@ function ChangeImgSource(source)
 	if(source.type == "file"){
   	if(source.files[0]!=null){
 
+  		var nombre = "";
 	    var tam = source.files[0].size;
-	    var nombre = source.files[0].name;
 	    var foto = document.getElementById("foto" + source.id);
+  		console.log(nombre);
 
 	    if(tam>300000)
 	    {
@@ -757,8 +769,16 @@ function ChangeImgSource(source)
 	    } 
 	    else 
 	    {
-	      foto.src = "img/" + nombre;
-	      fotos.push(source.files[0]);
+	    	var reader  = new FileReader();
+	    	reader.onloadend = function (e) 
+	    	{
+    			nombre = e.target.result;
+    			foto.src = nombre;
+	      		fotos.push(source.files[0]);
+  			}
+
+  			reader.readAsDataURL(source.files[0]);
+	      
 	    }
 	}
   } 
@@ -802,4 +822,20 @@ function EliminateSpace(space)
   return false;
 
 }
+
+//Parte de los ingredientes
+function AddIngredient()
+{
+	let ingredient = document.querySelector("#ingredient");
+	let editableList = document.querySelector("#ingredientslist");
+	if(ingredient.value != "")
+	{
+		editableList.innerHTML += `<li>${ingredient.value}</li>`;
+		ingredient.value = "";
+	}
+
+	return false;
+}
+
+
 

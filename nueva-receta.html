@@ -52,12 +52,11 @@
 			<label>Número de comensales </label>
 			<input type="number" name="comensales" required>
 			<label>Ingredientes</label>
-			<ul contenteditable="true">
-				<li>Lorem ipsum dolor sit amet.</li>
-				<li>Lorem ipsum dolor sit amet.</li>
-				<li>Lorem ipsum dolor sit amet.</li>
-				<li>Lorem ipsum dolor sit amet.</li>
+			<ul contenteditable="true" id="ingredientslist">
+				
 			</ul>
+			<input type="text" id="ingredient" placeholder="Introduce un nuevo ingrediente">
+			<button onclick="return AddIngredient()">Añadir ingrediente</button>
 			<label>Subir fotografías</label>
 				<br>
 				<button onclick="AddPhotoInput();">AÑADIR FOTOGRAFIAS</button>
