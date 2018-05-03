@@ -32,28 +32,27 @@
 		
 		<h2>Crear nueva receta: </h2>
 
-		<form onsubmit="return PostNewRecepee();">
+		<form onsubmit="return PostNewRecepee(this);">
 		
 			<label >Nombre de la receta </label>
-			<input type="text" name="nombre" required maxlength="200">
+			<input type="text" name="n" required maxlength="200">
 			
 			<label>Elaboración </label>
-			<textarea name="elab" cols="30" rows="10" required></textarea>
+			<textarea name="e" cols="30" rows="10" required></textarea>
 
 			<label>Tiempo de elaboración </label>
-			<input type="number" name="tiempo" min="0" required>
+			<input type="number" name="t" min="0" required>
 			
 			<label >Dificultad</label>
-			<select name="dificultad">
-				<option value="baja">Baja</option>
-				<option value="media">Media</option>
-				<option value="alta">Alta</option>
+			<select name="d">
+				<option value="1">Baja</option>
+				<option value="2">Media</option>
+				<option value="3">Alta</option>
 			</select>
 			<label>Número de comensales </label>
-			<input type="number" name="comensales" required>
+			<input type="number" name="c" required>
 			<label>Ingredientes</label>
-			<ul contenteditable="true" id="ingredientslist">
-				
+			<ul contenteditable="true" id="ingredientslist">	
 			</ul>
 			<input type="text" id="ingredient" placeholder="Introduce un nuevo ingrediente">
 			<button onclick="return AddIngredient()">Añadir ingrediente</button>

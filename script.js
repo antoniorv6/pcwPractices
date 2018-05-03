@@ -256,7 +256,6 @@ function Login(form)
 	};
 
 	xhr.setRequestHeader('Authentication', clave);
-	console.log(clave);
 	xhr.send(formulario);
 
 	return false;
@@ -720,9 +719,10 @@ function Evaluate(valoracion)
 //Añadir nuevas receticas
 
 var titulo;
-var Num_Img = 0;
+var Ingredients = 0;
 var contador = 0;
 var fotos = [];
+var sources = [];
 
 function AddPhotoInput()
 {
@@ -736,7 +736,7 @@ function AddPhotoInput()
 	 </label>
 	 <input name="`+contador+`" id="`+contador+`" type="file" onchange="ChangeImgSource(this)" required>
 	 <button onclick="return EliminateSpace(${id});">Eliminar</button>
-	 <textarea name="1" cols="20" rows="5" maxlength="250" placeholder="Añade una descripción de no más de 250 caracteres"></textarea>`;
+	 <textarea id=des${id} cols="20" rows="5" maxlength="250" placeholder="Añade una descripción de no más de 250 caracteres"></textarea>`;
 
 	 console.log("ficha"+contador);
 	 space.appendChild(newSpace);
@@ -746,12 +746,120 @@ function AddPhotoInput()
 
 function PostNewRecepee(form)
 {
-	let formulario = new FormData(form);
+	if(fotos.length > 0)
+	{
+		if(Ingredients>0)
+		{
+			let xhr = new XMLHttpRequest(),
+			formulario = new FormData(form),
+			url = 'rest/receta/',
+			usu = JSON.parse(sessionStorage.getItem('usuario'));
 
-	console.log(formulario);
+			if(xhr)
+			{	
+				
+				formulario.append('l', usu.login);
+
+				xhr.open('POST', url, true);
+
+				xhr.onload = function()
+				{
+					let response = JSON.parse(xhr.responseText);
+					console.log(response);
+					if(response.RESULTADO == 'OK')
+					{
+						PostIngredients(response.ID, usu);
+						for(var i=0; i<contador ; i++)
+		     			{
+	             			if(document.getElementById("ficha"+i)!=null)
+	             			{
+	             				PostPhoto(response.ID, i, usu);
+	             			}
+	             		}
+					}
+					else
+					{
+						console.log(response);
+					}
+				};
+				
+				xhr.setRequestHeader('Authorization', usu.clave);
+	        	xhr.send(formulario);
+			}
+		}
+	}
 
 	return false;
 }
+
+function PostPhoto(id, position, usuario)
+{
+	let xhr = new XMLHttpRequest(),
+		form  = new FormData()
+  		url = 'rest/receta/' + id + '/foto',
+		descripcion = document.getElementById("desficha" + position).value;
+		if(xhr)
+		{
+		    form.append('l',usuario.login);
+		    form.append('t',descripcion);
+		    form.append('f',fotos[position]);
+
+		    xhr.open('POST', url, true);
+		    xhr.onload = function(){
+		       
+		       let response = JSON.parse(xhr.responseText);
+
+		       if(response.RESULTADO == "OK")
+		       {
+		         console.log("FOTO SUBIDA CORRECTAMENTE")
+		       } 
+		       else 
+		       {
+		         console.log("ERROR");
+		       }
+		    };
+		    xhr.setRequestHeader('Authorization', usuario.clave);
+		    xhr.send(form);
+		}
+}
+
+function PostIngredients(receipt, usuario)
+{
+	let xhr = new XMLHttpRequest(),
+  		url = 'rest/receta/' + receipt + '/ingredientes',
+  		fd  = new FormData();
+  		ingredientList = document.querySelector('#ingredientslist'),
+  		sendIngredients = [];
+
+  	if(xhr)
+  	{
+	  	for(var i=0; i<ingredientList.children.length; i++)
+	  	{
+	      sendIngredients.push(ingredientList.childNodes[i].innerText);
+	    }
+
+	    fd.append('l',usuario.login);
+	    fd.append('i',JSON.stringify(sendIngredients));
+
+	    xhr.open('POST', url, true);
+
+	    xhr.onload = function()
+	    {
+	       let response = JSON.parse(xhr.responseText);
+	       if(response.RESULTADO == "OK"){
+	         console.log("INGREDIENTES SUBIDOS CORRECTAMENTE");
+	       } 
+	       else 
+	       {
+	         console.log("ERROR");
+	       }
+	    };
+	}
+    
+    xhr.setRequestHeader('Authorization', usuario.clave);
+    xhr.send(fd);
+}
+
 
 function ChangeImgSource(source)
 {
@@ -774,7 +882,9 @@ function ChangeImgSource(source)
 	    	{
     			nombre = e.target.result;
     			foto.src = nombre;
+    			sources.push(nombre);
 	      		fotos.push(source.files[0]);
+
   			}
 
   			reader.readAsDataURL(source.files[0]);
@@ -797,15 +907,11 @@ function EliminateSpace(space)
   let id = space.id.split("ficha");
   id = "foto" + id[1];
   let src = document.getElementById(id).src;
-  console.log(src);
-  let img = src.split("img/");
-  img = img[1];
-
-
   let index = -1;
   for(var i=0; i<fotos.length; i++)
   {
-    if(fotos[i].name == img){
+    if(sources[i] == src)
+    {
       console.log("encontrada");
       index = i;
     }
@@ -814,6 +920,7 @@ function EliminateSpace(space)
   if(index > -1)
   {
     fotos.splice(index, 1);
+    sources.splice(index, 1);
   }
 
   let container = document.getElementById(space.id);
@@ -833,6 +940,8 @@ function AddIngredient()
 		editableList.innerHTML += `<li>${ingredient.value}</li>`;
 		ingredient.value = "";
 	}
+
+	Ingredients++;
 
 	return false;
 }
