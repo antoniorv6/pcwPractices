@@ -308,7 +308,7 @@ body>div>a>img
 
 }
 
-	.form-newrecepee>form>#photosplace>label
+	.form-newrecepee>form>#photosplace>div>label
 	{
 		width: 100%;
 		background-color: #0A0F14;
@@ -332,7 +332,7 @@ body>div>a>img
 		font-weight: bold;
 	}
 
-	.form-newrecepee>form>#photosplace>input 
+	.form-newrecepee>form>#photosplace>div>input 
 	{
 		display: block;
 	    width: 100%;
@@ -356,11 +356,11 @@ body>div>a>img
 	    font-size: 20px;
 	}
 
-	.form-newrecepee>form>#photosplace>input:focus
+	.form-newrecepee>form>#photosplace>div>input:focus
 		{
 			background-color: #E5E5E5;
 		}
-	.form-newrecepee>form>#photosplace>input:hover
+	.form-newrecepee>form>#photosplace>div>input:hover
 		{
 			background-color: #E5E5E5;
 		}
@@ -374,7 +374,7 @@ body>div>a>img
 			background-color: #E5E5E5;
 		}
 
-	.form-newrecepee>form>#photosplace>textarea 
+	.form-newrecepee>form>#photosplace>div>textarea 
 	{
 		display: block;
 	    width: 100%;
@@ -398,11 +398,11 @@ body>div>a>img
 	    border: solid 1px;
 	}
 
-	.form-cabecera>form>#photosplace>textarea:focus
+	.form-cabecera>form>#photosplace>div>textarea:focus
 		{
 			background-color: #E5E5E5;
 		}
-	.form-cabecera>form>#photosplace>textarea:hover
+	.form-cabecera>form>#photosplace>div>textarea:hover
 		{
 			background-color: #E5E5E5;
 		}
@@ -437,7 +437,7 @@ body>div>a>img
 	{
 		background-color: #25CC60;
 	}
-	.form-newrecepee>form>#photosplace>img
+	.form-newrecepee>form>#photosplace>div>div>img
 	{
 		display: inline;
 		width: 50%;

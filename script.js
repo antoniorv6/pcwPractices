@@ -706,19 +706,31 @@ function Evaluate(valoracion)
 	return false;
 }
 
+//Añadir nuevas receticas
+
+var titulo;
+var Num_Img = 0;
+var contador = 0;
+var fotos = [];
+
 function AddPhotoInput()
 {
 	let space = document.querySelector("#photosplace");
-
-	space.innerHTML += 
+	var newSpace = document.createElement('div');
+	var id = "ficha"+contador;
+	newSpace.setAttribute('id', id );
+	newSpace.innerHTML += 
 	`<label for="fotos">
-	 	<img id="foto" src="./img/upload-empty.png" alt="foto1">
+	 	<img id="foto`+contador+`"src="./img/upload-empty.png" alt="foto1" onclick="ChangeImgSource(this)">
 	 </label>
-	 <input type="file" name="fotos" onchange = "ChangeImgSource(event);" title="Subir">
-	 <button onclick="return EliminateSpace();">Eliminar</button>
+	 <input name="`+contador+`" id="`+contador+`" type="file" onchange="ChangeImgSource(this)" required>
+	 <button onclick="return EliminateSpace(${id});">Eliminar</button>
 	 <textarea name="1" cols="20" rows="5" maxlength="250" placeholder="Añade una descripción de no más de 250 caracteres"></textarea>`;
 
-	 return false;
+	 console.log("ficha"+contador);
+	 space.appendChild(newSpace);
+
+	 contador++;
 }
 
 function PostNewRecepee(form)
@@ -732,9 +744,62 @@ function PostNewRecepee(form)
 
 function ChangeImgSource(source)
 {
-	let image = document.querySelector("#foto");
+	if(source.type == "file"){
+  	if(source.files[0]!=null){
 
-	console.log(image);
+	    var tam = source.files[0].size;
+	    var nombre = source.files[0].name;
+	    var foto = document.getElementById("foto" + source.id);
+
+	    if(tam>300000)
+	    {
+	      modalNR(5);
+	    } 
+	    else 
+	    {
+	      foto.src = "img/" + nombre;
+	      fotos.push(source.files[0]);
+	    }
+	}
+  } 
+
+  //CLICK EN LA IMAGEN
+  else
+  {
+  	var num_img = source.id.split('foto');
+  	document.getElementById(num_img[1]).click();
+  }
+
+}
+
+function EliminateSpace(space)
+{	
+  let id = space.id.split("ficha");
+  id = "foto" + id[1];
+  let src = document.getElementById(id).src;
+  console.log(src);
+  let img = src.split("img/");
+  img = img[1];
+
+
+  let index = -1;
+  for(var i=0; i<fotos.length; i++)
+  {
+    if(fotos[i].name == img){
+      console.log("encontrada");
+      index = i;
+    }
+  }
+
+  if(index > -1)
+  {
+    fotos.splice(index, 1);
+  }
+
+  let container = document.getElementById(space.id);
+  container.parentNode.removeChild(container);
+
+  return false;
 
 }
 
