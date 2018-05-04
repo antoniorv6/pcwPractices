@@ -10,18 +10,6 @@ function anyadir()
 
 }
 
-
-function cambiar()
-{
-	let ul = document.querySelector('#hola');
-
-	ul.outerHTML = `<article>
-						<h3>Título del artículo</h3>
-						<p>kadfjlkdsfjakldfjaskldfj</p>
-					</article>`;
-
-}
-
 var m_pagActual = 0;
 
 function loadMenu()
@@ -59,6 +47,7 @@ function getvariablesURL(nombre)
     return results[2];
 }
 
+
 function searchByAuthor()
 {
 	autor = getvariablesURL('a');
@@ -69,8 +58,17 @@ function searchByAuthor()
 	fetch(c_url).then(function(response){
 		response.json().then(function(texto)
 		{
-			console.log(texto);
-			writeReceiptObject(texto);	
+			localStorage.setItem('searchURL', c_url);
+			localStorage.setItem('searchURL', url);
+					var totalpaginas = 0;
+					if(texto.TOTAL_COINCIDENCIAS>6)
+					{
+						totalpaginas = Math.ceil(texto.TOTAL_COINCIDENCIAS/6);
+					}
+					localStorage.setItem("paginas", totalpaginas);
+					localStorage.setItem("actual", 0);
+					console.log(totalpaginas);
+					writeReceiptObject(texto, 1);	
 		},
 
 		
@@ -80,25 +78,37 @@ function searchByAuthor()
 });
 }
 
-
-function QuickSearch(form)
+function ProccessQuickSearch(form)
 {
 	let formdata = new FormData(form);
-	let c_url = 'rest/receta/?t='+formdata.get('text');
-		c_seccion = document.querySelector('#receipts');
+	window.location.replace('buscar.html?type=2&t='+formdata.get('text'));
+	return false;
+}
+
+function QuickSearch()
+{
+    let c_url = 'rest/receta/?t='+getvariablesURL('t')+'&lpag=6';
 
 	fetch(c_url).then(function(response){
 		response.json().then(function(texto)
 		{
-			c_seccion.innerHTML = null;
-			writeReceiptObject(texto);	
+			localStorage.setItem('searchURL', c_url);
+			localStorage.setItem('searchURL', url);
+					var totalpaginas = 0;
+					if(texto.TOTAL_COINCIDENCIAS>6)
+					{
+						totalpaginas = Math.ceil(texto.TOTAL_COINCIDENCIAS/6);
+					}
+					localStorage.setItem("paginas", totalpaginas);
+					localStorage.setItem("actual", 0);
+					console.log(totalpaginas);
+			writeReceiptObject(texto, 1);	
 		}, 
 	function(error){
 		console.log('ERORR');
-	});
-});
+	})
 
-	return false;
+	});
 }
 
 function loadResearch()
@@ -106,6 +116,7 @@ function loadResearch()
 	url = window.location.href;
 	var regex = new RegExp("[?&]" + "type" + "(=([^&#]*)|&|#|$)"),
         results = regex.exec(url);
+    
     if(results!=undefined)
     {
 		switch(Number(results[2]))
@@ -114,7 +125,11 @@ function loadResearch()
 				console.log("Buscar por autor");
 				searchByAuthor();
 			break;
-		}
+			case 2:
+				console.log("QuickSearch");
+				QuickSearch();
+			break; 
+		} 
 	}
 	else 
 	{
@@ -123,9 +138,16 @@ function loadResearch()
 	}	
 }
 
-function writeReceiptObject(texto, pagina)
+function writeReceiptObject(texto, type)
 {
 	console.log(texto);
+	let c_seccion = document.querySelector('#receipts');
+	c_seccion.innerHTML = null;
+
+	var shower = 1;
+	if(localStorage.getItem("paginas")>0)
+		shower = localStorage.getItem("paginas");
+
 	texto.FILAS.forEach(function(objJSON)
 			{
 				c_seccion.innerHTML += 
@@ -156,48 +178,107 @@ function writeReceiptObject(texto, pagina)
 
 	c_seccion.innerHTML += 
 			`<ul>
-				<li><button onclick="FirstPag();">Primera</button></li>
-				<li><button onclick="DecrementPag();"><span class="icon-left-big"></span></button></li>
-				<li><button>`+(Number(localStorage.getItem('actual'))+1)+` de `+localStorage.getItem("paginas")+`</button></li>
-				<li><button onclick="IncrementPag();"><span class="icon-right-big"></span></button></li>
-				<li><button onclick="LastPag();">Última</button></li>
+				<li><button onclick="FirstPag(${type});">Primera</button></li>
+				<li><button onclick="DecrementPag(${type});"><span class="icon-left-big"></span></button></li>
+				<li><button>`+(Number(localStorage.getItem('actual'))+1)+` de `+shower+`</button></li>
+				<li><button onclick="IncrementPag(${type});"><span class="icon-right-big"></span></button></li>
+				<li><button onclick="LastPag(${type});">Última</button></li>
 			</ul>`
 }
 
-function LastPag()
+function LastPag(type)
 {
-	if(localStorage.getItem("actual")!=localStorage.getItem("paginas")-1)
+	if(type == 0)
 	{
-		localStorage.setItem("actual", Number(localStorage.getItem("paginas")-1));
-		pedirRecetasFetch(localStorage.getItem("actual"));
+		if(localStorage.getItem("actual")!=localStorage.getItem("paginas")-1)
+		{
+			localStorage.setItem("actual", Number(localStorage.getItem("paginas")-1));
+			pedirRecetasFetch(localStorage.getItem("actual"));
+		}
+	}
+	else
+	{
+		if(localStorage.getItem("actual")!=localStorage.getItem("paginas")-1)
+		{
+			localStorage.setItem("actual", Number(localStorage.getItem("paginas")-1));
+			retakeSearchReceipts(localStorage.getItem("actual"));
+		}	
 	}
 }
 
-function FirstPag()
+function FirstPag(type)
 {
-	if(localStorage.getItem("actual")!=0)
+	if(type == 0)
 	{
-		localStorage.setItem("actual", 0);
-		pedirRecetasFetch(0);
+		if(localStorage.getItem("actual")!=0)
+		{
+			localStorage.setItem("actual", 0);
+			pedirRecetasFetch(0);
+		}
+	}
+	else
+	{
+		if(localStorage.getItem("actual")!=0)
+		{
+			localStorage.setItem("actual", 0);
+			retakeSearchReceipts(0);
+		}
 	}
 }
 
-function IncrementPag()
+function IncrementPag(type)
 {
-	if(localStorage.getItem("actual") + 1 <= localStorage.getItem("paginas")-1)
+	if(type == 0)
 	{
-		localStorage.setItem("actual", Number(localStorage.getItem("actual")+1));
-		pedirRecetasFetch(localStorage.getItem("actual"));
+		if(localStorage.getItem("actual") + 1 <= localStorage.getItem("paginas"))
+		{
+			localStorage.setItem("actual", Number(localStorage.getItem("actual")+1));
+			pedirRecetasFetch(localStorage.getItem("actual"));
+		}
+	}
+	else
+	{
+		if(localStorage.getItem("actual") + 1 <= localStorage.getItem("paginas"))
+		{
+			localStorage.setItem("actual", Number(localStorage.getItem("actual")+1));
+			retakeSearchReceipts(localStorage.getItem("actual"));
+		}
 	}
 }
 
-function DecrementPag()
+function DecrementPag(type)
 {
-	if(localStorage.getItem("actual") - 1 >= 0)
+	if(type == 0)
 	{
-		localStorage.setItem("actual", Number(localStorage.getItem("actual")-1));
-		pedirRecetasFetch(localStorage.getItem("actual"));
+		if(localStorage.getItem("actual") - 1 >= 0)
+		{
+			localStorage.setItem("actual", Number(localStorage.getItem("actual")-1));
+			pedirRecetasFetch(localStorage.getItem("actual"));
+		}
 	}
+	else
+	{
+		if(localStorage.getItem("actual") - 1 >= 0)
+		{
+			localStorage.setItem("actual", Number(localStorage.getItem("actual")-1));
+			retakeSearchReceipts(localStorage.getItem("actual"));
+		}
+	}
+}
+
+function retakeSearchReceipts(pag)
+{
+	fetch(localStorage.getItem('searchURL')+'&pag='+pag+'&lpag=6').then(function(response){
+		response.json().then(function(texto)
+		{
+			writeReceiptObject(texto, 1);	
+		},
+
+		
+	function(error){
+		console.log('ERORR');
+	});
+	});
 }
 
 function pedirRecetasFetch(pag)
@@ -211,11 +292,11 @@ function pedirRecetasFetch(pag)
 		fetch(c_url).then(function(response){
 		response.json().then(function(texto)
 		{
-			writeReceiptObject(texto);
 			var totalpaginas = Math.ceil(texto.TOTAL_COINCIDENCIAS/6);
 			console.log(totalpaginas);
 			localStorage.setItem("paginas", totalpaginas);
-			localStorage.setItem("actual", pag);	
+			localStorage.setItem("actual", pag);
+			writeReceiptObject(texto, 0);	
 		},
 
 		
@@ -224,9 +305,6 @@ function pedirRecetasFetch(pag)
 	});
 });
 }
-
-
-
 
 function Login(form)
 {
@@ -334,16 +412,24 @@ function BuscarPorFormulario(form)
 			response.text().then(function(texto)
 			{
 				let objJSON = JSON.parse(texto);
-				console.log(objJSON.FILAS.length);
+				//console.log(objJSON.FILAS.length);
 				c_seccion.innerHTML = null;
-
 				if(objJSON.FILAS.length == 0)
 				{
 					c_seccion.innerHTML += '<h3 class="errorbusqueda">NO SE HA ENCONTRADO NINGUNA RECETA</h3>';
 				}
 				else
 				{
-					writeReceiptObject(objJSON);
+					localStorage.setItem('searchURL', url);
+					var totalpaginas = 0;
+					if(objJSON.TOTAL_COINCIDENCIAS>6)
+					{
+						totalpaginas = Math.ceil(objJSON.TOTAL_COINCIDENCIAS/6);
+					}
+					localStorage.setItem("paginas", totalpaginas);
+					localStorage.setItem("actual", 0);
+					console.log(totalpaginas);
+					writeReceiptObject(objJSON,1);	
 				}
 			});
 		}, 
@@ -409,8 +495,6 @@ function checkUsr(usrname)
 	}
 	else
 	{
-
-
 	fetch(c_url).then(function(response){
 		response.text().then(function(texto)
 		{
