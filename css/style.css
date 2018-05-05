@@ -1,6 +1,11 @@
 
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 
+.hide
+{
+	display: none !important;
+}
+
 .error
 	{
 		background-color: #CC2B25;
@@ -47,12 +52,31 @@
 .modalcontent
 {
 	padding: 1em;
+	font-size: 20px;
+}
+
+.modalcontent>button
+{
+	font-size: 18px;
+	border: 0;
+	background-color: #25CC60;
+	padding: .5em;
+	text-decoration: none;
+	color: #fff;
+	width: 100%;
+	box-shadow: 0 3px 4px 0 rgba(0,0,0,0.2);
+}
+
+.modalcontent>button:hover
+{
+	background-color: #007F2D;
+	cursor: pointer;
 }
 
 .modalHeaderFail
 {
 	width: 100%;
-	background-color: #CC2B25;
+	background-color: #FF5A54;
 	color: #fff;
 	margin: 0;
 	padding: 1em;
@@ -457,6 +481,19 @@ body>div>a>img
 		margin-bottom: .5em;
 		cursor: pointer;
 	}
+
+	.form-newrecepee>form>#photosplace>div>button
+	{
+		color: #fff;
+		background-color: #CC2B25;
+		padding: .5em;
+		border: 0;
+		display: block;	
+		margin-left: 1.5em;
+		margin-bottom: .5em;
+		cursor: pointer;
+	}
+
 	.form-newrecepee>form>button:hover
 	{
 		background-color: #7F100B;

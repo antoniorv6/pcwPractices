@@ -7,8 +7,13 @@
 	<link rel="stylesheet" href="css/fontello.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script type="text/javascript" src="script.js"></script>
+	<script>
+		checkLogin(1);
+	</script>
 </head>
 <body>
+	<div id="mensajemodal" class="modal">
+	</div>
 	<header>
 		<div>
 			<div>
@@ -45,9 +50,9 @@
 			
 			<label >Dificultad</label>
 			<select name="d">
-				<option value="1">Baja</option>
-				<option value="2">Media</option>
-				<option value="3">Alta</option>
+				<option value="0">Baja</option>
+				<option value="1">Media</option>
+				<option value="2">Alta</option>
 			</select>
 			<label>Número de comensales </label>
 			<input type="number" name="c" required>
@@ -58,7 +63,7 @@
 			<button onclick="return AddIngredient()">Añadir ingrediente</button>
 			<label>Subir fotografías</label>
 				<br>
-				<button onclick="AddPhotoInput();">AÑADIR FOTOGRAFIAS</button>
+					<button class="addbutton" onclick="AddPhotoInput();">AÑADIR FOTOGRAFIAS</button>
 				<br>
 			<div id="photosplace">
 				

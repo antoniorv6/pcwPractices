@@ -15,4 +15,5 @@
 .icon-clock:before { content: '\e80d'; } /* '' */
 .icon-calendar:before { content: '\e80e'; } /* '' */
 .icon-info-circled:before { content: '\e80f'; } /* '' */
+.icon-folder-open-empty:before { content: '\f115'; } /* '' */
 .icon-user-plus:before { content: '\f234'; } /* '' */

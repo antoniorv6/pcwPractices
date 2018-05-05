@@ -1,3 +1,31 @@
+function checkLogin(logged)
+{
+	switch(logged)
+	{
+		case 0:
+			if(sessionStorage.getItem('usuario') != null)
+			{
+				window.location.replace("index.html");
+			}
+		break;
+		case 1:
+			if(sessionStorage.getItem('usuario') == null)
+			{
+				window.location.replace("index.html");
+			}
+		break;
+	}
+}
+
+function checkReceiptIsValid()
+{
+	let id = getvariablesURL('id');
+	if(id == undefined)
+	{
+		window.location.replace("index.html");
+	}
+}
+
 function anyadir()
 {
 	//let ul = document.getElementById('hola');
@@ -44,6 +72,8 @@ function getvariablesURL(nombre)
 	nombre = nombre.replace(/[\[\]]/g, "\\$&");
 	var regex = new RegExp("[?&]" + nombre + "(=([^&#]*)|&|#|$)"),
         results = regex.exec(url);
+    if(results == null)
+    	return undefined;
     return results[2];
 }
 
@@ -158,7 +188,7 @@ function writeReceiptObject(texto, type)
 				<div class="content">
 				<img src='fotos/`+ 
 				objJSON.fichero 
-				+`'alt="foto de la receta" width = '300' height = '300'>
+				+`'alt="foto de la receta">
 				<p><a href="buscar.html?type=1&a=`+objJSON.autor+`"><strong><span class="icon-user"></span>`+
 				objJSON.autor
 				+`</strong></a></p>
@@ -230,17 +260,18 @@ function IncrementPag(type)
 {
 	if(type == 0)
 	{
-		if(localStorage.getItem("actual") + 1 <= localStorage.getItem("paginas"))
+		if(Number(localStorage.getItem("actual")) + 1 < localStorage.getItem("paginas"))
 		{
-			localStorage.setItem("actual", Number(localStorage.getItem("actual")+1));
+			localStorage.setItem("actual", Number(localStorage.getItem("actual"))+1);
 			pedirRecetasFetch(localStorage.getItem("actual"));
 		}
 	}
 	else
 	{
-		if(localStorage.getItem("actual") + 1 <= localStorage.getItem("paginas"))
+		if(Number(localStorage.getItem("actual")) + 1 < localStorage.getItem("paginas"))
 		{
-			localStorage.setItem("actual", Number(localStorage.getItem("actual")+1));
+			console.log(Number(localStorage.getItem("actual"))+1);
+			localStorage.setItem("actual", Number(localStorage.getItem("actual"))+1);
 			retakeSearchReceipts(localStorage.getItem("actual"));
 		}
 	}
@@ -455,20 +486,11 @@ function Register(request)
 		let r = JSON.parse(xhr.responseText);
 		if(r.RESULTADO == 'ERROR')
 		{
-			let c_seccion = document.querySelector('#mensajemodal');
-			let mensajeModal = document.querySelector('.contenidomodal');
-			mensajeModal.innerHTML = '<h3 class="modalHeaderFail"> ERROR</h3><div class="modalcontent"><p>'+r.DESCRIPCION+'</p> <button onclick="closeModal()">Vuelve a intentarlo</a></div>';
-			c_seccion.style.display = "block";		
+			openModal(0, r.DESCRIPCION, 0);	
 		}
 		else
 		{
-			let c_seccion = document.querySelector('#mensajemodal');
-			let mensajeModal = document.querySelector('.contenidomodal');
-			mensajeModal.innerHTML = `<h3 class="modalHeaderSuccess">ENHORABUENA</h3>
-			<div class="modalcontent"><p>Te has registrado correctamente en Fooder's Choice ¡Disfruta de tu experiencia!</p>
-			<a href="index.html">¡De acuerdo!</a></div>`;
-			c_seccion.style.display = "block";
-			console.log(r);
+			openModal(1, "Te has registrado correctamente en Fooder's Choice ¡Disfruta de tu experiencia!", 0);
 		}
 	};
 
@@ -477,10 +499,41 @@ function Register(request)
 	return false;
 }
 
-function closeModal()
+function openModal(type,message,parameter)
+{
+	let c_seccion = document.querySelector('#mensajemodal');
+	c_seccion.innerHTML = null;
+	var newSpace = document.createElement('div');
+	newSpace.setAttribute('class', 'contenidomodal');
+	if(type == 0)
+	{
+		newSpace.innerHTML += '<h3 class="modalHeaderFail"> ERROR</h3>';
+	}
+	else
+	{
+		newSpace.innerHTML += `<h3 class="modalHeaderSuccess">ENHORABUENA</h3>`;
+	}
+
+	newSpace.innerHTML += `<div class="modalcontent">${message}<br><br><button onclick="closeModal(${parameter})">De acuerdo</button></div>`;
+	c_seccion.appendChild(newSpace);
+	c_seccion.style.display = "block";
+}
+
+function closeModal(clean)
 {
 	let c_seccion = document.querySelector('#mensajemodal');
 	c_seccion.style.display = "none";
+
+	switch(clean)
+	{
+		case 1:
+			let c_form = document.querySelector('form');
+			c_form.reset();
+		break;
+		case 2:
+			loadReceipt();
+		break;
+	}
 }
 
 function checkUsr(usrname)
@@ -765,7 +818,15 @@ function postComment(form)
 	xhr.onload = function()
 	{
 		console.log(xhr.responseText);
-		loadReceipt();
+		let objJSON = JSON.parse(xhr.responseText);
+		if (objJSON.RESULTADO == "OK") 
+		{
+			openModal(1,"Comentario enviado correctamente", 2);
+		}
+		else
+		{
+			openModal(0,"Error al enviar el comentario", 0);
+		}
 	};
 
 	xhr.setRequestHeader('Authorization', usu.clave);
@@ -792,7 +853,7 @@ function Evaluate(valoracion)
 	
 	xhr.onload = function()
 	{
-		loadReceipt();
+		openModal(1, "Voto emitido correctamente", 2);
 	};
 
 	xhr.setRequestHeader('Authorization', usu.clave);
@@ -818,7 +879,8 @@ function AddPhotoInput()
 	`<label for="fotos">
 	 	<img id="foto`+contador+`"src="./img/upload-empty.png" alt="foto1" onclick="ChangeImgSource(this)">
 	 </label>
-	 <input name="`+contador+`" id="`+contador+`" type="file" onchange="ChangeImgSource(this)" required>
+	 <input class="hide" name="`+contador+`" id="`+contador+`" type="file" onchange="ChangeImgSource(this)" required>
+	 <label for="`+contador+`"><span class="icon-folder-open-empty" aria-hidden="true">&nbsp;&nbsp;Seleccionar archivo</span></label>
 	 <button onclick="return EliminateSpace(${id});">Eliminar</button>
 	 <textarea id=des${id} cols="20" rows="5" maxlength="250" placeholder="Añade una descripción de no más de 250 caracteres"></textarea>`;
 
@@ -858,11 +920,21 @@ function PostNewRecepee(form)
 	             			if(document.getElementById("ficha"+i)!=null)
 	             			{
 	             				PostPhoto(response.ID, i, usu);
+	             				openModal(1, `Se ha subido correctamente la receta: ${form.n.value}`, 1);
+	             				for(var i=0; i<contador; i++)
+	             				{
+	             					var identifier = "ficha"+i;
+	             					console.log(identifier);
+	             					EliminateSpace(identifier);
+	             				}
+	             				let editableList = document.getElementByID('ingredientslist');
+	             				editablelist += null;
 	             			}
 	             		}
 					}
 					else
 					{
+						let response = JSON.parse(xhr.responseText);
 						console.log(response);
 					}
 				};
@@ -871,6 +943,14 @@ function PostNewRecepee(form)
 	        	xhr.send(formulario);
 			}
 		}
+		else
+		{
+			openModal(0,"La receta debe tener ingredientes",0);
+		}
+	}
+	else
+	{
+		openModal(0,"Debes subir al menos una foto para poder crear la receta",0);
 	}
 
 	return false;
@@ -899,7 +979,7 @@ function PostPhoto(id, position, usuario)
 		       } 
 		       else 
 		       {
-		         console.log("ERROR");
+		         	openModal(0,"Error al subir las fotografias",0);
 		       }
 		    };
 		    xhr.setRequestHeader('Authorization', usuario.clave);
@@ -934,8 +1014,8 @@ function PostIngredients(receipt, usuario)
 	         console.log("INGREDIENTES SUBIDOS CORRECTAMENTE");
 	       } 
 	       else 
-	       {
-	         console.log("ERROR");
+	       {			
+	       		openModal(0,"Error al subir los ingredientes",0);
 	       }
 	    };
 	}
@@ -957,7 +1037,7 @@ function ChangeImgSource(source)
 
 	    if(tam>300000)
 	    {
-	      modalNR(5);
+	      openModal(0, "El fichero supera el tamaño máximo permitido", 0);
 	    } 
 	    else 
 	    {
@@ -987,8 +1067,17 @@ function ChangeImgSource(source)
 }
 
 function EliminateSpace(space)
-{	
-  let id = space.id.split("ficha");
+{
+  console.log(space);
+  let id;
+  if(space.id == undefined)
+  {
+  	id = space.split("ficha");
+  }
+  else
+  {
+  	id = space.id.split("ficha");
+  }
   id = "foto" + id[1];
   let src = document.getElementById(id).src;
   let index = -1;
@@ -1007,8 +1096,17 @@ function EliminateSpace(space)
     sources.splice(index, 1);
   }
 
-  let container = document.getElementById(space.id);
+  let container;
+  if(space.id == undefined)
+  {
+  	container = document.getElementById(space);
+  }
+  else
+  {
+  	container = document.getElementById(space.id);
+  }
   container.parentNode.removeChild(container);
+  contador --;
 
   return false;
 
