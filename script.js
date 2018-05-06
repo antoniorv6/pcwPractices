@@ -220,7 +220,7 @@ function LastPag(type)
 {
 	if(type == 0)
 	{
-		if(localStorage.getItem("actual")!=localStorage.getItem("paginas")-1)
+		if(localStorage.getItem("actual")<localStorage.getItem("paginas")-1)
 		{
 			localStorage.setItem("actual", Number(localStorage.getItem("paginas")-1));
 			pedirRecetasFetch(localStorage.getItem("actual"));
@@ -228,10 +228,10 @@ function LastPag(type)
 	}
 	else
 	{
-		if(localStorage.getItem("actual")!=localStorage.getItem("paginas")-1)
+		if(localStorage.getItem("actual")<localStorage.getItem("paginas")-1)
 		{
 			localStorage.setItem("actual", Number(localStorage.getItem("paginas")-1));
-			retakeSearchReceipts(localStorage.getItem("actual"));
+			retakeSearchReceipts(localStorage.getItem("paginas")-1);
 		}	
 	}
 }
@@ -890,11 +890,29 @@ function AddPhotoInput()
 	 contador++;
 }
 
+function checkIngredients()
+{ 
+	let list = document.querySelector('#ingredientslist')
+	let numberOfIngredients = list.childElementCount;
+	if(numberOfIngredients > 0)
+	{
+		for(var i=0; i<=list.children.length; i++)
+	  	{
+	  		console.log(list.children[i].childElementCount);
+	  		if(list.children[i]!= undefined && list.children[i].tagName == 'LI' && list.children[i].childElementCount == 0)
+	  		{
+	      		return true;
+	      	}
+	    }
+	}
+	return false;
+}
+
 function PostNewRecepee(form)
 {
 	if(fotos.length > 0)
 	{
-		if(Ingredients>0)
+		if(checkIngredients())
 		{
 			let xhr = new XMLHttpRequest(),
 			formulario = new FormData(form),
@@ -915,22 +933,22 @@ function PostNewRecepee(form)
 					if(response.RESULTADO == 'OK')
 					{
 						PostIngredients(response.ID, usu);
-						for(var i=0; i<contador ; i++)
+						for(var i=0; i<=contador ; i++)
 		     			{
 	             			if(document.getElementById("ficha"+i)!=null)
 	             			{
 	             				PostPhoto(response.ID, i, usu);
-	             				openModal(1, `Se ha subido correctamente la receta: ${form.n.value}`, 1);
-	             				for(var i=0; i<contador; i++)
-	             				{
-	             					var identifier = "ficha"+i;
-	             					console.log(identifier);
-	             					EliminateSpace(identifier);
-	             				}
-	             				let editableList = document.getElementByID('ingredientslist');
-	             				editablelist += null;
 	             			}
 	             		}
+	             		openModal(1, `Se ha subido correctamente la receta: ${form.n.value}`, 1);
+	             		for(var i=0; i<=contador; i++)
+	             		{
+	             			var identifier = "ficha"+i;
+	             			console.log(identifier);
+	             			EliminateSpace(identifier);
+	             		}
+	             		let editableList = document.querySelector('#ingredientslist');
+	             		editableList.innerHTML = null;
 					}
 					else
 					{
@@ -999,7 +1017,10 @@ function PostIngredients(receipt, usuario)
   	{
 	  	for(var i=0; i<ingredientList.children.length; i++)
 	  	{
-	      sendIngredients.push(ingredientList.childNodes[i].innerText);
+	  		if(ingredientList.children[i]!= undefined && ingredientList.children[i].tagName == 'LI' && ingredientList.children[i].childElementCount == 0)
+	  		{
+	      		sendIngredients.push(ingredientList.children[i].innerText);
+	      	}
 	    }
 
 	    fd.append('l',usuario.login);

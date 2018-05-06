@@ -6,6 +6,7 @@
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/fontello.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script type="text/javascript" src="script.js"></script>
 </head>
 <body>
 	<header>
@@ -20,15 +21,7 @@
 		</div>
 		<input type="checkbox" hidden id="hamburguesa">
 		<nav>
-				<ul>
-					<li><label for="hamburguesa">&equiv;</label></li>
-					<li><a href="index.html"><span class="icon-home-outline"></span><span>INICIO</span></a></li>
-					<li><a href="buscar.html"><span class="icon-search"></span><span>BUSCAR</span></a></li>
-					<li><a href="login.html"><span class="icon-login"></span><span>LOGIN</span></a></li>
-					<li><a href="registro.html"><span class="icon-user-plus"></span><span>REGISTRO</span></a></li>
-					<li><a href="index.html"><span class="icon-logout"></span><span>LOGOUT</span></a></li>
-					<li><a href="nueva-receta.html"><span class="icon-list-add"></span><span>NUEVA RECETA</span></a></li>
-					<li><a href="acerca.html"><span class="icon-info-circled"></span><span>ACERCA DE</span></a></li>
+				<ul id="menu">
 				</ul>
 			</nav>
 	</header>
@@ -52,12 +45,21 @@
 			</div>
 		</article>
 		<article>
-			<h2>Documentación de la práctica</h2>
+			<h2>Documentación de la práctica 1</h2>
 				<ul>
 					<li>Formulario de "Buscar y Ordenar" colocados a principio de página en index.html y en buscar.html.</li>
 					<li>Login y Registro no tienen el menú principal de cabecera por razones de diseño. Para volver a la página principal se debe hacer click o en el logo o en un botón indicado en el footer.</li>
 				</ul>
 		</article>
+		<article>
+			<h2>Documentación de la práctica 2</h2>
+				<ul>
+					<li>Problemas con los ingredientes, he añadido una función de verificación por si el usuario ha introducido mal los ingredientes o no ha insertado ninguno, ya que en el enunciado no se especifica nada al respecto y el servidor responde con un error 500 si no mandas ningún ingrediente</li>
+				</ul>
+		</article>
 	</section>
 	<footer>&copy; <strong><a href="acerca.html">Antonio Ríos Vila</a></strong> Alicante - <time datetime="2018" >2018</time> <a href="index.html">Página principal</a><a href="acerca.html">Información de contacto</a></footer>
+	<script>
+		loadMenu();
+	</script>
 </body>
