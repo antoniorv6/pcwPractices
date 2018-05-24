@@ -5,44 +5,55 @@ var OriginalMatrix = [],
 	PuzzleMatrix = [],
 	regions,
 	puzzlewidth,
-	puzzleheight;
+	puzzleheight,
+	dimension,
+	actualState = 0;
 
 function setGame()
 {
 	let dificulty = document.getElementById("dificulty").value;
 	console.log(dificulty);
 
+	cv =document.querySelector("#cv02");
+	ResetCanvas(cv);
+
 	switch(Number(dificulty))
 	{
 		case 0:
 			puzzlewidth = 6;
 			puzzleheight = 4;
+			dimension = 60;
 		break;
 
 		case 1:
 			puzzlewidth = 9;
 			puzzleheight = 6;
+			dimension = 40;
 		break;
 
 		case 2:
 			puzzlewidth = 12;
 			puzzleheight = 8;
+			dimension = 30;
 		break;
 	}
 
 	initMatrixes();
+	DrawPuzzle();
 	DrawLines();
 
 }
 
 function initMatrixes()
 {
-	for(var i=0; i<puzzleheight; i++)
+	OriginalMatrix = [];
+	PuzzleMatrix = [];
+	for(var i=0; i<puzzlewidth; i++)
 	{
 		OriginalMatrix[i] = [];
 		PuzzleMatrix[i] = [];
 
-		for(var j=0; j<puzzlewidth; j++)
+		for(var j=0; j<puzzleheight; j++)
 		{
 			OriginalMatrix[i][j] = String(i) + String(j);
 			PuzzleMatrix[i][j] = String(i) + String(j);
@@ -124,8 +135,6 @@ function DrawLines()
 		ctx	    = cv02.getContext('2d'),
 		dimw 	= cv.width/puzzlewidth; 
 		dimh    = cv.height/puzzleheight;
-
-	ResetCanvas(cv);
 	ctx.beginPath();
 	ctx.lineWidth = 2;
 	ctx.strokeStyle = '#a00';
@@ -141,6 +150,35 @@ function DrawLines()
 	ctx.stroke();
 }
 
+function DrawPuzzle()
+{
+	let cv01 = document.querySelector("#cv01"),
+		cv02 = document.querySelector("#cv02"),
+		ctx01		= cv01.getContext('2d'),
+		ctx02  		= cv02.getContext('2d');
+
+	for(var i=0; i<puzzlewidth; i++)
+	{
+		for(var j=0; j<puzzleheight; j++)
+		{
+			var [col,fila] = InterpretateMatrix(PuzzleMatrix[i][j]);
+			let imgdata     = ctx01.getImageData(col*dimension, fila*dimension,dimension,dimension);
+			ctx02.putImageData(imgdata, col*dimension, fila*dimension);
+		}
+	}
+}
+
+function InterpretateMatrix(datapos)
+{
+	var number = Number(datapos),
+		col = Math.floor(number/10),
+		row = number%10;
+
+	//Ya tenemos la fila y la columna de la matriz original en la matriz del puzzle
+
+	e = [col,row];
+	return e;
+}
 
 function ResetCanvas(cv)
 {
