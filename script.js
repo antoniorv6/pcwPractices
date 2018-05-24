@@ -11,7 +11,9 @@ var OriginalMatrix = [],
 	first = -1,
 	second = -1,
 	difficulty,
-	fil1,fil2,col1,col2;
+	fil1,fil2,col1,col2,
+	movements = 0,
+	isphotoPlaced = false;
 
 function setGame()
 {
@@ -49,6 +51,30 @@ function setGame()
 	DrawPuzzle();
 	DrawLines();
 
+}
+
+function StartGame()
+{
+	if(actualState == 0 && isphotoPlaced == true)
+	{
+		actualState = 1;
+		disorderMatrix();
+		document.getElementById("start").disabled = true;
+		document.getElementById("uploadPhoto").disabled = true;	
+		document.getElementById("dificulty").disabled = true;
+		document.querySelector('.Itson').innerHTML += 
+		`<h3>El juego está en marcha</h3>
+		<p id="punctuation">Movimientos: ${movements}</p>`;
+
+		document.querySelector('.selector').innerHTML +=
+		`<button onclick = "EndGame()">Finalizar Partida</button>
+		<button onclick = "ShowHelp()">Ayuda</button>`;
+	}
+}
+
+function UpdateMovements()
+{
+	document.getElementById('punctuation').innerHTML = `Movimientos: ${movements}`;
 }
 
 function disorderMatrix()
@@ -116,25 +142,31 @@ function manageClick()
 
 	cv02.onclick = function(e)
 	{
-		let [col, row] = sacarFilaCol(e);
+		if(actualState == 1)
+		{
+			let [col, row] = sacarFilaCol(e);
 
-		if(first == -1)
-		{
-			console.log("Pongo la primera");
-			first = PuzzleMatrix[row][col];
-			fil1 = row;
-			col1 = col;
-			console.log(first);
-		}
-		else
-		{
-			console.log("Pongo la segunda");
-			second = PuzzleMatrix[row][col];
-			fil2 = row;
-			col2 = col;
-			console.log(second);
-			Swap();
-			RedrawCanvas();
+			if(first == -1)
+			{
+				console.log("Pongo la primera");
+				first = PuzzleMatrix[row][col];
+				fil1 = row;
+				col1 = col;
+				console.log(first);
+			}
+			else
+			{
+				console.log("Pongo la segunda");
+				second = PuzzleMatrix[row][col];
+				fil2 = row;
+				col2 = col;
+				console.log(second);
+				Swap();
+				RedrawCanvas();
+				movements++;
+				UpdateMovements();
+				CheckVictory();
+			}
 		}
 	}
 }
@@ -205,33 +237,40 @@ function sacarFilaCol(e)
 
 function UploadPhoto(file)
 {
-	if(file.type == "file"){
+	if(file.type == "file")
+	{
 	  	
 	  	if(file.files[0]!=null)
 	  	{
 	  		PutImageOnCanvas1(file.files[0]);
 		}
-  } 
+  	} 
 }
 
 function PutImageOnCanvas1(e)
 {
-	console.log(e);
+	if(actualState == 0)
+	{
+		console.log(e);
 
-	let fr = new FileReader();
+		let fr = new FileReader();
 
-	fr.onload = function()
-		{
-			let img = new Image();
-			img.onload = function()
+		fr.onload = function()
 			{
-				let ctx = cv01.getContext('2d');
-				ctx.drawImage(img, 0 ,0, cv01.width, cv01.height);
+				let img = new Image();
+				img.onload = function()
+				{
+					let ctx = cv01.getContext('2d');
+					ctx.drawImage(img, 0 ,0, cv01.width, cv01.height);
+				};
+				img.src = fr.result;
+				isphotoPlaced = true;
 			};
-			img.src = fr.result;
-		};
 
-	fr.readAsDataURL(e);
+		fr.readAsDataURL(e);
+	}
+	else
+		console.log("NO");
 }
 
 
@@ -302,3 +341,98 @@ function RedrawCanvas()
 	DrawPuzzle();
 	DrawLines();
 }
+
+function CheckVictory()
+{
+	for(var i = 0; i<puzzlewidth; i++)
+	{
+		for(var j = 0; j<puzzleheight; j++)
+		{
+			if(OriginalMatrix[i][j] != PuzzleMatrix[i][j])
+			{
+				return;
+			}
+		}
+	}
+
+	openModal(1);
+}
+
+function EndGame()
+{
+	openModal(0);
+}
+
+function ShowHelp()
+{
+	RedrawCanvas();
+
+	let cv2 = document.getElementById('cv02'),
+		ctx = cv2.getContext('2d');
+
+	for(var i = 0; i<puzzlewidth; i++)
+	{
+		for(var j = 0; j<puzzleheight; j++)
+		{
+			if(OriginalMatrix[i][j] == PuzzleMatrix[i][j])
+			{
+				ctx.lineWidth = 2;
+				ctx.fillStyle = 'rgba(255,0,0,0.7)';
+				ctx.fillRect(i*dimension, j*dimension, dimension, dimension);
+			}
+		}
+	}
+}
+
+function openModal(type)
+{
+	document.getElementById('mensajemodal').style.display = 'block';
+
+	if(type == 1)
+	{
+		document.querySelector('.modal-content').innerHTML += `<h3 class="success">¡Enhorabuena!</h3>
+		<p>Has superado el puzzle</p>
+		<button onclick="closeModal()">¡Bieeeen!</button>`;
+	}
+	else
+	{
+		document.querySelector('.modal-content').innerHTML += `<h3 class="fail">Fin del juego</h3>
+		<p>Al final no ha podido ser...</p>
+		<button onclick="closeModal()">Aceptar la derrota</button>`;
+	}
+	
+}
+
+function closeModal()
+{
+	document.getElementById('mensajemodal').style.display = 'none';
+	document.querySelector('.modal-content').innerHTML = null;
+	Reset();
+}
+
+function Reset()
+{
+	if(actualState == 1)
+	{
+		let cv1 = document.querySelector('#cv01'),
+			cv2 = document.querySelector('#cv02');
+		ResetCanvas(cv1);
+		ResetCanvas(cv2);
+
+		document.querySelector('.selector').innerHTML = 
+		`<select id="dificulty" onchange="setGame();">
+						<option value="0">Facil</option>
+						<option value="1">Normal</option>
+						<option value="2">Dificil</option>
+					</select>`;
+		document.querySelector('.Itson').innerHTML = null;
+		document.getElementById('uploadPhoto').value = null;
+		DrawLines();
+		document.getElementById("start").disabled = false;
+		document.getElementById("uploadPhoto").disabled = false;
+		isphotoPlaced = false;	
+		actualState = 0;
+		initMatrixes();
+	}
+}
+
