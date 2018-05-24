@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="script.js"></script>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<h1>Ejemplo de canvas</h1>
+	<section>
+		<h2>canvas 01</h2>
+
+		<canvas id="canvas1">
+			
+		</canvas>
+	</section>
+</body>
+<footer>
+	<button onclick="dibujarRect01();">dibujaRecct1</button>
+	<button onclick="rellenarRect01();">rellenarRecct1</button>
+	<button onclick="pintarTexto()">pintar texto</button>
+	<button onclick="dibujarLinea()">dibujarlinea</button>
+	<button onclick="limpiarCanvas()">limpiar canvas</button>
+	<div>
+		<label for="strokeColor">Cambia el color del borde</label>
+		<input type="color" name="stroke" title="StrokeColor" onchange="dibujarRect01(this)">
+		<label for="color">cambia el color de relleno</label>
+		<input type="color" name="color" onchange="rellenarRect01(this);">
+	</div>
+	<div>
+		<label>X
+		<input type="number" id="x" value="10">
+		</label>
+		<label>
+			<input type="number" id="y" value="10">
+		</label>
+
+	</div>
+	<script>
+		prepararCanvas();
+	</script>
+</footer>
+</html>

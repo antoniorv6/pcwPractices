@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Canvastolocooorl</title>
+	<link rel="stylesheet" href="style.css">
+	<script src="script.js"></script>
+</head>
+<body>
+	<section>
+		<h2>Canvas 1</h2>
+		<canvas id="cv01"></canvas>
+		<footer>
+			<!--<button onclick="prueba01();">Prueba 1</button>
+			<button onclick="traslacion();">Traslacion</button>
+			<button onclick="rotacion();">Rotacion</button>
+			<button onclick="escalado();">Escalado</button>-->
+			<button onclick="imagen01();">Poner una fotaza</button>
+			<!--<button onclick = "copiar01();">Copia la photo</button>-->
+			<button onclick = "copiar02();">Copia bien la foto</button>
+		</footer>
+	</section>
+	<section>
+		<h2>Canvas 2</h2>
+		<div>
+		<canvas id="cv02"></canvas>
+		<button onclick="divide();">Divide</button>
+		<footer>
+			<div>Posicion(X,Y): <output id="posXY"></output></div>
+			<div>PosEnter: <output id="posenter"></output></div>
+			<div>PosLeave: <output id="posleave"></output></div>
+			<div>PosClick: <output id="posclick"></output></div>
+			<div>PosUp: <output id="posup"></output></div>
+			<div>PosDown: <output id="posdown"></output></div>
+			<div>FilaCoulumna: <output id="filacol"></output></div>
+		</footer>
+		</div>
+	</section>
+	<script>
+		prepareCanvas();
+	</script>
+</body>
+</html>

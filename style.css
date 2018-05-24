@@ -1,0 +1,29 @@
+*
+{
+	box-sizing: border-box;
+	font-family: sans-serif;
+}
+
+canvas
+{
+	border: 1px solid #234;
+}
+
+section
+{
+	display: flex;
+	flex-direction: column;
+}
+article
+{
+	margin: 0.5em;
+}
+
+@media all and (min-width: 750px)
+{
+	section
+	{
+		flex-direction: row;
+	}
+}
+

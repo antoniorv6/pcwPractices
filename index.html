@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>XTremePuzzle</title>
+	<script src="script.js"></script>
+	<link rel="stylesheet" href="style.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	<h1>Puzzle Game</h1>
+	<h2>Only 4 the Players</h2>
+	<section>
+		<article>
+			<h2 hidden>Canvas 1</h2>
+			<canvas id="cv01">
+			</canvas>
+			<footer>
+				<label for="uploadPhoto">
+					Sube una foto
+				</label>
+				<input type="file" id="uploadPhoto" hidden onchange="UploadPhoto(this)">
+			</footer>
+		</article>
+		<article>
+			<h2 hidden>Canvas 2</h2>
+			<canvas id="cv02">
+			</canvas>
+			<footer>
+				<select id="dificulty" onchange="setGame();">
+					<option value="0">Facil</option>
+					<option value="1">Normal</option>
+					<option value="2">Dificil</option>
+				</select>
+			</footer>
+		</article>
+	</section>
+	<footer>
+		<script>prepareCanvas();</script>
+	</footer>
+</body>
+</html>
