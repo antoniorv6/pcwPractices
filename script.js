@@ -7,7 +7,11 @@ var OriginalMatrix = [],
 	puzzlewidth,
 	puzzleheight,
 	dimension,
-	actualState = 0;
+	actualState = 0,
+	first = -1,
+	second = -1,
+	difficulty,
+	fil1,fil2,col1,col2;
 
 function setGame()
 {
@@ -23,18 +27,21 @@ function setGame()
 			puzzlewidth = 6;
 			puzzleheight = 4;
 			dimension = 60;
+			difficulty = 2;
 		break;
 
 		case 1:
 			puzzlewidth = 9;
 			puzzleheight = 6;
 			dimension = 40;
+			difficulty = 3;
 		break;
 
 		case 2:
 			puzzlewidth = 12;
 			puzzleheight = 8;
 			dimension = 30;
+			difficulty = 4;
 		break;
 	}
 
@@ -42,6 +49,28 @@ function setGame()
 	DrawPuzzle();
 	DrawLines();
 
+}
+
+function disorderMatrix()
+{
+	let ctr = puzzleheight;
+
+	while(ctr>0)
+	{
+		console.log("desordeno");
+		fil1 = Math.floor(Math.random()*puzzlewidth);
+		fil2 = Math.floor(Math.random()*puzzlewidth);
+		col1 = Math.floor(Math.random()*puzzleheight);
+		col2 = Math.floor(Math.random()*puzzleheight);
+		first = PuzzleMatrix[fil1][col1];
+		second = PuzzleMatrix[fil2][col2];
+		console.log(first);
+		console.log(second);
+		Swap();
+		ctr--;
+	}
+
+	RedrawCanvas();
 }
 
 function initMatrixes()
@@ -77,6 +106,46 @@ function prepareCanvas()
 	setGame();
 
 	manageDragDrop();
+	manageClick();
+	manageHover();
+}
+
+function manageClick()
+{
+	let cv = document.querySelector('#cv02');
+
+	cv02.onclick = function(e)
+	{
+		let [col, row] = sacarFilaCol(e);
+
+		if(first == -1)
+		{
+			console.log("Pongo la primera");
+			first = PuzzleMatrix[row][col];
+			fil1 = row;
+			col1 = col;
+			console.log(first);
+		}
+		else
+		{
+			console.log("Pongo la segunda");
+			second = PuzzleMatrix[row][col];
+			fil2 = row;
+			col2 = col;
+			console.log(second);
+			Swap();
+			RedrawCanvas();
+		}
+	}
+}
+
+function Swap()
+{
+	PuzzleMatrix[fil1][col1] = second;
+	PuzzleMatrix[fil2][col2] = first;
+
+	first = -1;
+	second = -1;
 }
 
 function manageDragDrop()
@@ -95,6 +164,43 @@ function manageDragDrop()
 		let fichero = e.dataTransfer.files[0];
 		PutImageOnCanvas1(fichero);
 	};
+}
+
+function manageHover()
+{
+	let cv01 = document.querySelector('#cv02'),
+		ctx1 = cv01.getContext('2d');
+	
+	cv02.onmousemove = function(e)
+	{
+		[col, row] = sacarFilaCol(e);
+
+		let fc = cv02.getAttribute('data-FC');
+
+		if(fc)
+		{
+			fc = JSON.parse(fc);
+			if(fc.row == row && fc.col == col)
+				return
+		}
+
+		RedrawCanvas();
+		ctx1.lineWidth = 2;
+		ctx1.strokeStyle = "blue";
+		ctx1.strokeRect(row*dimension,col*dimension,dimension,dimension);
+
+		fc = {'row':row, 'col' : col};
+		cv02.setAttribute('data-FC', JSON.stringify(fc))
+	}
+}
+
+function sacarFilaCol(e)
+{
+	let dim = e.target.width/puzzlewidth,
+		fila = Math.floor(e.offsetX/dim),
+		columna = Math.floor(e.offsetY/dim);
+
+	return [columna, fila];
 }
 
 function UploadPhoto(file)
@@ -133,18 +239,22 @@ function DrawLines()
 {
 	let cv 	    = document.querySelector('#cv02'),
 		ctx	    = cv02.getContext('2d'),
-		dimw 	= cv.width/puzzlewidth; 
-		dimh    = cv.height/puzzleheight;
+		dimw 	= cv.width/puzzlewidth,
+		dimh    = cv.height/puzzleheight,
+		color   = document.getElementById('colorpicker').value;
 	ctx.beginPath();
 	ctx.lineWidth = 2;
-	ctx.strokeStyle = '#a00';
+	ctx.strokeStyle = color;
 	for(let i = 1; i<puzzlewidth; i++)
 	{
  		ctx.moveTo(i*dimw,0);
 		ctx.lineTo(i*dimw,cv.height);
 
-		ctx.moveTo(0, i*dimh);
-		ctx.lineTo(cv.width , i*dimh);
+		if(i<puzzlewidth-difficulty)
+		{
+			ctx.moveTo(0, i*dimh);
+			ctx.lineTo(cv.width , i*dimh);
+		}
 	}
 
 	ctx.stroke();
@@ -163,7 +273,7 @@ function DrawPuzzle()
 		{
 			var [col,fila] = InterpretateMatrix(PuzzleMatrix[i][j]);
 			let imgdata     = ctx01.getImageData(col*dimension, fila*dimension,dimension,dimension);
-			ctx02.putImageData(imgdata, col*dimension, fila*dimension);
+			ctx02.putImageData(imgdata, i*dimension, j*dimension);
 		}
 	}
 }
@@ -183,4 +293,12 @@ function InterpretateMatrix(datapos)
 function ResetCanvas(cv)
 {
 	cv.width = cv.width;
+}
+
+function RedrawCanvas()
+{
+	let cv01 = document.querySelector("#cv02")
+	ResetCanvas(cv01);
+	DrawPuzzle();
+	DrawLines();
 }
