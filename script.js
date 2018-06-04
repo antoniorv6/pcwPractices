@@ -13,7 +13,9 @@ var OriginalMatrix = [],
 	difficulty,
 	fil1,fil2,col1,col2,
 	movements = 0,
-	isphotoPlaced = false;
+	isphotoPlaced = false,
+	elapsedSeconds = 0,
+	interval = setInterval(IncrementTime, 1000);
 
 function setGame()
 {
@@ -58,17 +60,29 @@ function StartGame()
 	if(actualState == 0 && isphotoPlaced == true)
 	{
 		actualState = 1;
+		elapsedSeconds = 0;
 		disorderMatrix();
 		document.getElementById("start").disabled = true;
 		document.getElementById("uploadPhoto").disabled = true;	
 		document.getElementById("dificulty").disabled = true;
 		document.querySelector('.Itson').innerHTML += 
 		`<h3>El juego está en marcha</h3>
-		<p id="punctuation">Movimientos: ${movements}</p>`;
+		<p id="punctuation">Movimientos: ${movements}</p>
+		<p id="time" Tiempo transcurrido: ${elapsedSeconds} segundos</p>`;
 
 		document.querySelector('.selector').innerHTML +=
 		`<button onclick = "EndGame()">Finalizar Partida</button>
 		<button onclick = "ShowHelp()">Ayuda</button>`;
+	}
+}
+
+function IncrementTime()
+{
+	if(actualState == 1)
+	{
+		elapsedSeconds++;
+		let counter = document.getElementById('time');
+		counter.innerText = `Tiempo transcurrido: ${elapsedSeconds} segundos`;
 	}
 }
 
@@ -391,13 +405,17 @@ function openModal(type)
 	if(type == 1)
 	{
 		document.querySelector('.modal-content').innerHTML += `<h3 class="success">¡Enhorabuena!</h3>
-		<p>Has superado el puzzle</p>
+		<h4>Has superado el puzzle</h4>
+		<p>Movimientos realizados: ${movements}</p>
+		<p>Te has estrujado el cerebro durante: ${elapsedSeconds} segundos</p>
 		<button onclick="closeModal()">¡Bieeeen!</button>`;
 	}
 	else
 	{
 		document.querySelector('.modal-content').innerHTML += `<h3 class="fail">Fin del juego</h3>
-		<p>Al final no ha podido ser...</p>
+		<h4>Al final no ha podido ser...</h4>
+		<p>Movimientos realizados: ${movements}</p>
+		<p>Te has estrujado el cerebro durante: ${elapsedSeconds} segundos</p>
 		<button onclick="closeModal()">Aceptar la derrota</button>`;
 	}
 	
