@@ -144,10 +144,20 @@ function prepareCanvas()
 	});
 
 	setGame();
-
+	drawText();
 	manageDragDrop();
 	manageClick();
 	manageHover();
+}
+
+function drawText()
+{
+	let canvas = document.querySelector('#cv01'),
+		ctx = canvas.getContext('2d');
+
+	ctx.font = '20px Arial';
+	ctx.textAlign = 'center';
+	ctx.fillText("Inserta una foto para jugar", _WIDTH_/2, _HEIGTH_/2);
 }
 
 function manageClick()
@@ -253,7 +263,6 @@ function UploadPhoto(file)
 {
 	if(file.type == "file")
 	{
-	  	
 	  	if(file.files[0]!=null)
 	  	{
 	  		PutImageOnCanvas1(file.files[0]);
@@ -276,6 +285,8 @@ function PutImageOnCanvas1(e)
 				{
 					let ctx = cv01.getContext('2d');
 					ctx.drawImage(img, 0 ,0, cv01.width, cv01.height);
+					DrawPuzzle();
+					DrawLines();
 				};
 				img.src = fr.result;
 				isphotoPlaced = true;
@@ -434,8 +445,7 @@ function Reset()
 	{
 		let cv1 = document.querySelector('#cv01'),
 			cv2 = document.querySelector('#cv02');
-		ResetCanvas(cv1);
-		ResetCanvas(cv2);
+		prepareCanvas();
 
 		document.querySelector('.selector').innerHTML = 
 		`<select id="dificulty" onchange="setGame();">
