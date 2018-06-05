@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Pruebas de js</title>
+	<script src="pcwLibrary.js"></script>
+	<script src="script.js"></script>
+</head>
+<body>
+	<button onclick="pruebaGet()">Presiona para hacer una peticion get</button>
+	<br>
+	<h2>Post sin key</h2>
+	<form onsubmit="return pruebaPost(this)">
+		<input type="text" name="login">
+		<input type="password" name="pwd">
+		<input type="submit">
+	</form>
+	<h2>Post con key y usuario</h2>
+	<form onsubmit="return postComment(this)">
+		<input type="text" name="titulo">
+		<input type="text" name="texto">
+		<input type="submit">
+	</form>
+</body>
+</html>
