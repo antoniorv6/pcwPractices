@@ -15,7 +15,8 @@ var OriginalMatrix = [],
 	movements = 0,
 	isphotoPlaced = false,
 	elapsedSeconds = 0,
-	interval = setInterval(IncrementTime, 1000);
+	interval = setInterval(IncrementTime, 1000),
+	disordered = 0;
 
 function setGame()
 {
@@ -50,7 +51,9 @@ function setGame()
 	}
 
 	initMatrixes();
+	
 	DrawPuzzle();
+	
 	DrawLines();
 
 }
@@ -65,14 +68,15 @@ function StartGame()
 		document.getElementById("start").disabled = true;
 		document.getElementById("uploadPhoto").disabled = true;	
 		document.getElementById("dificulty").disabled = true;
+		document.getElementById("end").disabled = false;
+		document.getElementById("help").disabled = false;
 		document.querySelector('.Itson').innerHTML += 
 		`<h3>El juego está en marcha</h3>
+		<p id="disordered">Quedan ${disordered} piezas por colocar</p>
 		<p id="punctuation">Movimientos: ${movements}</p>
 		<p id="time" Tiempo transcurrido: ${elapsedSeconds} segundos</p>`;
+		CountDisorderedPieces();
 
-		document.querySelector('.selector').innerHTML +=
-		`<button onclick = "EndGame()">Finalizar Partida</button>
-		<button onclick = "ShowHelp()">Ayuda</button>`;
 	}
 }
 
@@ -155,14 +159,15 @@ function drawText()
 	let canvas = document.querySelector('#cv01'),
 		ctx = canvas.getContext('2d');
 
-	ctx.font = '20px Arial';
+	ctx.font = '18px Arial';
 	ctx.textAlign = 'center';
-	ctx.fillText("Inserta una foto para jugar", _WIDTH_/2, _HEIGTH_/2);
+	ctx.fillText("Haz click o arrastra una imagen aquí", _WIDTH_/2, _HEIGTH_/2);
 }
 
 function manageClick()
 {
-	let cv = document.querySelector('#cv02');
+	let cv02 = document.querySelector('#cv02'),
+		cv01 = document.querySelector('#cv01');
 
 	cv02.onclick = function(e)
 	{
@@ -189,8 +194,17 @@ function manageClick()
 				RedrawCanvas();
 				movements++;
 				UpdateMovements();
+				CountDisorderedPieces();
 				CheckVictory();
 			}
+		}
+	}
+
+	cv01.onclick = function(e)
+	{
+		if(actualState == 0)
+		{
+			document.querySelector('#uploadPhoto').click();
 		}
 	}
 }
@@ -212,6 +226,9 @@ function manageDragDrop()
 	{
 		e.stopPropagation();
 		e.preventDefault(); //return false;
+		cv01.style.border = '1px solid #9ecaed';
+		cv01.style.borderColor = '#9ecaed';
+		cv01.style.boxShadow = '0 0 10px #9ecaed';
 	};
 
 	cv01.ondrop = function(e)
@@ -219,7 +236,17 @@ function manageDragDrop()
 		e.preventDefault();
 		let fichero = e.dataTransfer.files[0];
 		PutImageOnCanvas1(fichero);
+		cv01.style.border = '1px solid #234';
+		cv01.style.boxShadow = 'none';
 	};
+
+	cv01.ondragleave = function(e)
+	{
+		e.stopPropagation();
+		e.preventDefault(); //return false;
+		cv01.style.border = '1px solid #234';
+		cv01.style.boxShadow = 'none';
+	}
 }
 
 function manageHover()
@@ -240,13 +267,16 @@ function manageHover()
 				return
 		}
 
-		RedrawCanvas();
-		ctx1.lineWidth = 2;
-		ctx1.strokeStyle = "blue";
-		ctx1.strokeRect(row*dimension,col*dimension,dimension,dimension);
+		if(isphotoPlaced)
+		{
+			RedrawCanvas();
+			ctx1.lineWidth = 2;
+			ctx1.strokeStyle = "blue";
+			ctx1.strokeRect(row*dimension,col*dimension,dimension,dimension);
 
-		fc = {'row':row, 'col' : col};
-		cv02.setAttribute('data-FC', JSON.stringify(fc))
+			fc = {'row':row, 'col' : col};
+			cv02.setAttribute('data-FC', JSON.stringify(fc))
+		}
 	}
 }
 
@@ -274,25 +304,28 @@ function PutImageOnCanvas1(e)
 {
 	if(actualState == 0)
 	{
-		console.log(e);
+		console.log(e.type);
+		if(e.type == 'image/jpeg' || e.type == 'image/png' || e.type == 'image/gif' || e.type == 'image/svg')
+		{
+			let fr = new FileReader();
 
-		let fr = new FileReader();
-
-		fr.onload = function()
-			{
-				let img = new Image();
-				img.onload = function()
+			fr.onload = function()
 				{
-					let ctx = cv01.getContext('2d');
-					ctx.drawImage(img, 0 ,0, cv01.width, cv01.height);
-					DrawPuzzle();
-					DrawLines();
+					let img = new Image();
+					img.onload = function()
+					{
+						ResetCanvas(cv01);
+						let ctx = cv01.getContext('2d');
+						ctx.drawImage(img, 0 ,0, cv01.width, cv01.height);
+						DrawPuzzle();
+						DrawLines();
+					};
+					img.src = fr.result;
+					isphotoPlaced = true;
 				};
-				img.src = fr.result;
-				isphotoPlaced = true;
-			};
 
-		fr.readAsDataURL(e);
+			fr.readAsDataURL(e);
+		}
 	}
 	else
 		console.log("NO");
@@ -417,6 +450,7 @@ function openModal(type)
 	{
 		document.querySelector('.modal-content').innerHTML += `<h3 class="success">¡Enhorabuena!</h3>
 		<h4>Has superado el puzzle</h4>
+		<p>¡Has colocado bien todas las piezas!</p>
 		<p>Movimientos realizados: ${movements}</p>
 		<p>Te has estrujado el cerebro durante: ${elapsedSeconds} segundos</p>
 		<button onclick="closeModal()">¡Bieeeen!</button>`;
@@ -425,6 +459,7 @@ function openModal(type)
 	{
 		document.querySelector('.modal-content').innerHTML += `<h3 class="fail">Fin del juego</h3>
 		<h4>Al final no ha podido ser...</h4>
+		<p>Te has dejado ${disordered} piezas por colocar bien</p>
 		<p>Movimientos realizados: ${movements}</p>
 		<p>Te has estrujado el cerebro durante: ${elapsedSeconds} segundos</p>
 		<button onclick="closeModal()">Aceptar la derrota</button>`;
@@ -458,9 +493,29 @@ function Reset()
 		DrawLines();
 		document.getElementById("start").disabled = false;
 		document.getElementById("uploadPhoto").disabled = false;
+		document.getElementById("end").disabled = true;
+		document.getElementById("help").disabled = true;
 		isphotoPlaced = false;	
 		actualState = 0;
 		initMatrixes();
 	}
+}
+
+function CountDisorderedPieces()
+{
+	disordered = 0;
+	for(var i = 0; i<puzzlewidth; i++)
+	{
+		for(var j = 0; j<puzzleheight; j++)
+		{
+			if(OriginalMatrix[i][j] != PuzzleMatrix[i][j])
+			{
+				disordered++;
+			}
+		}
+	}
+
+	document.getElementById('disordered').innerText = `Quedan ${disordered} piezas por colocar`;
+
 }
 

@@ -8,8 +8,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-	<h1>Puzzle Game</h1>
-	<h2>Only 4 the Players</h2>
+	<header>
+		<div>
+			<a href="acerca.html"><img src="Puzzle.png" alt="logo"></a>
+		</div>
+		<div>
+			<h1>Puzzle Game</h1>
+			<h2>Solo para los verdaderos jugadores</h2>
+		</div>
+	</header>
+
 	<div id="mensajemodal" class="modal">
   		<div class="modal-content">
   		</div>
@@ -19,18 +27,21 @@
 			<h2>FOTO</h2>
 			<canvas id="cv01">
 			</canvas>
+			<br>
+			<br>
 			<footer>
 				<label for="uploadPhoto" id="labelupload">
 					Sube una foto
 				</label>
-				<input type="file" id="uploadPhoto" hidden onchange="UploadPhoto(this)">
-				<button onclick="StartGame();" id="start">Iniciar el juego</button>
+				<input type="file" id="uploadPhoto" accept="image/*" hidden onchange="UploadPhoto(this)">
 			</footer>
 		</article>
 		<article>
 			<h2>PUZZLE</h2>
 			<canvas id="cv02">
 			</canvas>
+			<br>
+			<br>
 			<footer>
 				<div class="selector">
 					<select id="dificulty" onchange="setGame();">
@@ -39,6 +50,10 @@
 						<option value="2">Dificil</option>
 					</select>
 				</div>
+				<br>
+				<button onclick="StartGame();" id="start">Iniciar el juego</button>
+				<button onclick = "EndGame()" id="end" disabled>Finalizar Partida</button>
+				<button onclick = "ShowHelp()" id="help" disabled>Ayuda</button>
 				<p>Color de las líneas</p>
 				<input type="color" id="colorpicker" onchange="RedrawCanvas();">
 			</footer>
@@ -50,6 +65,8 @@
 	</section>
 	<footer>
 		<script>prepareCanvas();</script>
+		<br>
+		<p>&copy; <strong><a href="acerca.html">Antonio Ríos Vila</a></strong> Alicante - <time datetime="2018" >2018</time> <a href="acerca.html">Información de contacto</a></p>
 	</footer>
 </body>
 </html>
