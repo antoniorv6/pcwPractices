@@ -24,9 +24,10 @@ function pruebaPost(formulario)
 
 	function login_ok(response)
 	{
-		console.log(response);
-		userManager.setLogin(response.login);
-		userManager.setKey(response.clave);
+		let responsejs = JSON.parse(response);
+		console.log(responsejs);
+		userManager.setLogin(responsejs.login);
+		userManager.setKey(responsejs.clave);
 
 		console.log(userManager.getLogin());
 		console.log(userManager.getKey());

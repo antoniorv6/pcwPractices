@@ -2,12 +2,16 @@
 function RequestInterface()
 {
 	var baseURL = 'rest/';
-	var authorizationHeader = {};
 
 	this.geturl = function(url)
 	{
 		console.log(baseURL + url);
 		return baseURL + url;
+	}
+
+	this.setBaseURL = function(newURL)
+	{
+		baseURL = newURL;
 	}
 
 }
@@ -89,8 +93,7 @@ RequestInterface.prototype.postRequest = function (url, form, callbacksuccess, i
 	xhr.open('POST', this.geturl(url), true);
 	xhr.onload = function()
 	{
-		let response = JSON.parse(xhr.responseText);
-		callbacksuccess(response);
+		callbacksuccess(xhr.responseText);
 	}
 
 	if(isHeaderRequired)
