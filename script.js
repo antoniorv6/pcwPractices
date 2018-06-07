@@ -6,6 +6,13 @@ function pruebaGet()
 	{
 		objJSON.json().then(function(json){
 			console.log(json);
+			let body = document.querySelector('body'),
+				newEl = document.createElement('p');
+
+			newEl.innerText = json.FILAS[0].nombre;
+
+			body.appendChild(newEl);
+
 		});
 	}
 

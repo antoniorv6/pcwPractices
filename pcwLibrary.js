@@ -33,11 +33,22 @@ function UserManagement()
 	{
 		return sessionStorage.getItem('key');
 	}
+
+	this.logout = function()
+	{
+		sessionStorage.removeItem('login');
+		sessionSotrage.removeItem('key');
+	}
 }
 
 function ModalManagement()
 {
-	//TODO ==> Mañana me meto al tema de modals
+	var isModalSet = false;
+
+	this.changeStatus = function(status)
+	{
+		isModalSet = status;
+	}
 }
 
 //DEFINICION DE METODOS COMPLEJOS
@@ -82,5 +93,49 @@ RequestInterface.prototype.postRequest = function (url, form, callbacksuccess, i
 	xhr.send(formData);
 }
 
+ModalManagement.prototype.setModalZone = function()
+{
+	let body = document.querySelector('body'),
+		modal = document.createElement("div"),
+		modalCont = document.createElement("div");
+
+	//Esta zona la podeis editar como queráis, yo creo que es la forma mas facil de hacer un modal tranquilamente, pero ya como querais
+	modal.id = "mensajemodal";
+	modal.classList.add('modal');
+	modalCont.classList.add('modal-content');
+	modal.appendChild(modalCont);
+		
+	body.insertBefore(modal, body.firstChild);
+}
+
+ModalManagement.prototype.openModal = function(success, title, message)
+{
+	//******PODEIS PERSONALIZAR COMO QUERAIS******//
+
+	document.getElementById('mensajemodal').style.display = 'block';
+
+	if(success)
+	{
+		document.querySelector('.modal-content').innerHTML += `<h3 class="success">${title}</h3>
+		${message}
+		<button onclick="modalManager.closeModal()">Volver</button>`;
+	}
+	else
+	{
+		document.querySelector('.modal-content').innerHTML += `<h3 class="fail">${title}</h3>
+		${message}
+		<button onclick="modalManager.closeModal()">Volver</button>`;
+	}
+}
+
+ModalManagement.prototype.closeModal = function()
+{
+	//******PODEIS PERSONALIZAR COMO QUERAIS******//
+	document.getElementById('mensajemodal').style.display = 'none';
+	document.querySelector('.modal-content').innerHTML = null;
+}
+
+
 let reqInterface = new RequestInterface(),
 	userManager = new UserManagement();
+	modalManager = new ModalManagement();
