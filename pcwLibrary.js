@@ -39,6 +39,14 @@ function UserManagement()
 		sessionStorage.removeItem('login');
 		sessionSotrage.removeItem('key');
 	}
+
+	this.isUserLoggedIn = function()
+	{
+		if(sessionStorage.getItem('login') == null)
+			return false;
+
+		return true;
+	}
 }
 
 function ModalManagement()
@@ -112,6 +120,7 @@ ModalManagement.prototype.setModalZone = function()
 		modalCont.classList.add('modal-content');
 		modal.appendChild(modalCont);	
 		body.insertBefore(modal, body.firstChild);
+		this.changeStatus(true);
 	}
 }
 
@@ -119,27 +128,33 @@ ModalManagement.prototype.openModal = function(success, title, message)
 {
 	//******PODEIS PERSONALIZAR COMO QUERAIS******//
 
-	document.getElementById('mensajemodal').style.display = 'block';
+	if(this.getModalStatus())
+	{
+		document.getElementById('mensajemodal').style.display = 'block';
 
-	if(success)
-	{
-		document.querySelector('.modal-content').innerHTML += `<h3 class="success">${title}</h3>
-		${message}
-		<button onclick="modalManager.closeModal()">Volver</button>`;
-	}
-	else
-	{
-		document.querySelector('.modal-content').innerHTML += `<h3 class="fail">${title}</h3>
-		${message}
-		<button onclick="modalManager.closeModal()">Volver</button>`;
+		if(success)
+		{
+			document.querySelector('.modal-content').innerHTML += `<h3 class="success">${title}</h3>
+			${message}
+			<button onclick="modalManager.closeModal()">Volver</button>`;
+		}
+		else
+		{
+			document.querySelector('.modal-content').innerHTML += `<h3 class="fail">${title}</h3>
+			${message}
+			<button onclick="modalManager.closeModal()">Volver</button>`;
+		}
 	}
 }
 
 ModalManagement.prototype.closeModal = function()
 {
 	//******PODEIS PERSONALIZAR COMO QUERAIS******//
-	document.getElementById('mensajemodal').style.display = 'none';
-	document.querySelector('.modal-content').innerHTML = null;
+	if(this.getModalStatus())
+	{
+		document.getElementById('mensajemodal').style.display = 'none';
+		document.querySelector('.modal-content').innerHTML = null;
+	}
 }
 
 
