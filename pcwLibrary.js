@@ -49,6 +49,11 @@ function ModalManagement()
 	{
 		isModalSet = status;
 	}
+
+	this.getModalStatus = function()
+	{
+		return isModalSet;
+	}
 }
 
 //DEFINICION DE METODOS COMPLEJOS
@@ -95,17 +100,19 @@ RequestInterface.prototype.postRequest = function (url, form, callbacksuccess, i
 
 ModalManagement.prototype.setModalZone = function()
 {
-	let body = document.querySelector('body'),
-		modal = document.createElement("div"),
-		modalCont = document.createElement("div");
+	if(!this.getModalStatus())
+	{
+		let body = document.querySelector('body'),
+			modal = document.createElement("div"),
+			modalCont = document.createElement("div");
 
-	//Esta zona la podeis editar como queráis, yo creo que es la forma mas facil de hacer un modal tranquilamente, pero ya como querais
-	modal.id = "mensajemodal";
-	modal.classList.add('modal');
-	modalCont.classList.add('modal-content');
-	modal.appendChild(modalCont);
-		
-	body.insertBefore(modal, body.firstChild);
+		//Esta zona la podeis editar como queráis, yo creo que es la forma mas facil de hacer un modal tranquilamente, pero ya como querais
+		modal.id = "mensajemodal";
+		modal.classList.add('modal');
+		modalCont.classList.add('modal-content');
+		modal.appendChild(modalCont);	
+		body.insertBefore(modal, body.firstChild);
+	}
 }
 
 ModalManagement.prototype.openModal = function(success, title, message)
