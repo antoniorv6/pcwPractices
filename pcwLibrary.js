@@ -68,9 +68,24 @@ function ModalManagement()
 	}
 }
 
+function FileManager()
+{
+	var lastImagesrc = undefined;
+
+	this.getLastSrc = function()
+	{
+		return lastImageSrc;
+	}
+
+	this.setNewSrc = function(src)
+	{
+		lastImagesrc = src;
+	}
+}
+
 //DEFINICION DE METODOS COMPLEJOS
 
-RequestInterface.prototype.getRequest = function(url, callbacksuccess)
+RequestInterface.prototype.getRequestFETCH = function(url, callbacksuccess)
 {
 	fetch(this.geturl(url)).
 		then(
@@ -160,7 +175,37 @@ ModalManagement.prototype.closeModal = function()
 	}
 }
 
+FileManager.prototype.chargePhoto = function(file, callbacksuccess)
+{
+	if(file.files[0]!=null && this.checkExtension(file.files[0]))
+	{
+		let fr = new FileReader();
+
+			fr.onload = function()
+				{
+					let img = new Image();
+					img.onload = function()
+					{
+						// Devuelve toda la etiqueta img preparada para lo que queramos suuuuh
+						fileManager.setNewSrc(img.src);
+						callbacksuccess(img);
+					};
+					img.src = fr.result;
+				}
+
+		fr.readAsDataURL(file.files[0]);
+	}
+}
+
+FileManager.prototype.checkExtension = function(file)
+{
+	if(file.type == 'image/jpeg' || file.type == 'image/png' || file.type == 'image/gif' || file.type == 'image/svg')
+		return true;
+	return false;
+}
+
 
 let reqInterface = new RequestInterface(),
 	userManager = new UserManagement();
 	modalManager = new ModalManagement();
+	fileManager = new FileManager();

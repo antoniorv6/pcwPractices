@@ -1,6 +1,6 @@
 function pruebaGet()
 {
-	reqInterface.getRequest('receta/6', procesaJSON);
+	reqInterface.getRequestFETCH('receta/6', procesaJSON);
 
 	function procesaJSON(objJSON)
 	{
@@ -46,6 +46,25 @@ function postComment(formulario)
 	}
 
 	return false;
+}
+
+function cargaFichero(file)
+{
+	fileManager.chargeFile(file, hola);
+
+	function hola()
+	{}
+}
+
+function cargaFoto(file)
+{
+	fileManager.chargePhoto(file, funcion);
+
+	function funcion(photo)
+	{
+		console.log(photo);
+		document.querySelector('.placerPhoto').appendChild(photo);
+	}
 }
 
 
