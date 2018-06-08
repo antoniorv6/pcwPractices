@@ -4,13 +4,16 @@
 	<meta charset="UTF-8">
 	<title>XTremePuzzle</title>
 	<script src="script.js"></script>
-	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/fontello.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 	<header>
 		<div>
-			<a href="acerca.html"><img src="Puzzle.png" alt="logo"></a>
+			<a href="acerca.html">
+				<img src="Puzzle.png" alt="logo">
+			</a>
 		</div>
 		<div>
 			<h1>Puzzle Game</h1>
@@ -30,7 +33,7 @@
 			<br>
 			<br>
 			<footer>
-				<label for="uploadPhoto" id="labelupload">
+				<label for="uploadPhoto" id="labelupload"><span class="icon-upload"></span>
 					Sube una foto
 				</label>
 				<input type="file" id="uploadPhoto" accept="image/*" hidden onchange="UploadPhoto(this)">
@@ -51,11 +54,12 @@
 					</select>
 				</div>
 				<br>
-				<button onclick="StartGame();" id="start">Iniciar el juego</button>
-				<button onclick = "EndGame()" id="end" disabled>Finalizar Partida</button>
-				<button onclick = "ShowHelp()" id="help" disabled>Ayuda</button>
-				<p>Color de las líneas</p>
-				<input type="color" id="colorpicker" onchange="RedrawCanvas();">
+				<button onclick="StartGame();" id="start"> <span class="icon-play"></span>Iniciar el juego</button>
+				<button onclick = "EndGame()" id="end" disabled> <span class="icon-hand-paper-o"></span>Finalizar Partida</button>
+				<button onclick = "ShowHelp()" id="help" disabled> <span class="icon-search"></span>Ayuda</button>
+				<p> <span class="icon-eyedropper"></span>Color de las lineas</p>
+				<span class="pickColor" onclick="document.getElementById('colorpicker').click()"> </span>
+				<input type="color" id="colorpicker" onchange="RedrawCanvas();" hidden>
 			</footer>
 		</article>
 	</section>

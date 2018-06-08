@@ -182,6 +182,7 @@ function manageClick()
 				fil1 = row;
 				col1 = col;
 				console.log(first);
+				DrawSelection();
 			}
 			else
 			{
@@ -190,6 +191,7 @@ function manageClick()
 				fil2 = row;
 				col2 = col;
 				console.log(second);
+				DrawSelection();
 				Swap();
 				RedrawCanvas();
 				movements++;
@@ -216,6 +218,7 @@ function Swap()
 
 	first = -1;
 	second = -1;
+	DrawSelection();
 }
 
 function manageDragDrop()
@@ -355,6 +358,9 @@ function DrawLines()
 	}
 
 	ctx.stroke();
+
+	//Cambiamos el color del colorPicker
+	document.querySelector('.pickColor').style.background = document.getElementById('colorpicker').value;
 }
 
 function DrawPuzzle()
@@ -398,6 +404,7 @@ function RedrawCanvas()
 	ResetCanvas(cv01);
 	DrawPuzzle();
 	DrawLines();
+	DrawSelection();
 }
 
 function CheckVictory()
@@ -440,6 +447,7 @@ function ShowHelp()
 			}
 		}
 	}
+	DrawSelection();
 }
 
 function openModal(type)
@@ -517,5 +525,19 @@ function CountDisorderedPieces()
 
 	document.getElementById('disordered').innerText = `Quedan ${disordered} piezas por colocar`;
 
+}
+
+function DrawSelection()
+{
+	let cv2 = document.getElementById('cv02'),
+		ctx = cv2.getContext('2d');
+
+	ctx.lineWidth = 2;
+	ctx.fillStyle = 'rgba(0,0,255,0.6)';
+
+	if(first != -1)
+	{
+		ctx.fillRect(fil1*dimension, col1*dimension, dimension, dimension);
+	}
 }
 

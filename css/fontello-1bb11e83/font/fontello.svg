@@ -1,0 +1,20 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>Copyright (C) 2018 by original authors @ fontello.com</metadata>
+<defs>
+<font id="fontello" horiz-adv-x="1000" >
+<font-face font-family="fontello" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
+<missing-glyph horiz-adv-x="1000" />
+<glyph glyph-name="eyedropper" unicode="&#xe800;" d="M845 415l-16-16 81-81-80-78-80 81-415-418-208 0-109 113 0 201 418 418-83 84 78 78 83-83 16 17q65 65 158 65t157-65q66-65 66-158t-66-158z m-539-381l366 365-158 158-360-361q63-3 106-46 48-48 46-116z" horiz-adv-x="928" />
+
+<glyph glyph-name="upload" unicode="&#xe801;" d="M500 776l260-244-164 0 0-256-190 0 0 256-166 0z m468-578q18-10 27-32t3-40l-28-154q-4-20-22-33t-40-13l-816 0q-22 0-40 13t-22 33l-28 154q-10 48 32 72l158 108 98 0-170-130 178 0q8 0 12-8l40-110 300 0 40 110q8 8 12 8l178 0-170 130 98 0z" horiz-adv-x="1000" />
+
+<glyph glyph-name="play" unicode="&#xe802;" d="M772 333l-741-412q-13-7-22-2t-9 20v822q0 14 9 20t22-2l741-412q13-7 13-17t-13-17z" horiz-adv-x="785.7" />
+
+<glyph glyph-name="search" unicode="&#xe803;" d="M335 246l25-25q-28-28-85-86t-73-74l-27 27q16 15 74 73t86 85z m245 551q136 0 234-97t97-234-97-234-234-96q-64 0-123 24l-255-257-184 185 256 255q-26 63-26 123 0 137 98 234t234 97z m0-551q91 0 155 64t64 156-64 155-155 64-156-64-64-155 64-156 156-64z" horiz-adv-x="928" />
+
+<glyph glyph-name="hand-paper-o" unicode="&#xf256;" d="M491 779q-26 0-44-19t-18-44v-366h-18v295q0 25-19 44t-44 18-44-18-18-44v-438l-86 115q-21 28-57 28-30 0-51-21t-21-50q0-24 15-43l214-286q21-29 57-29h384q19 0 34 13t19 31l43 226q2 18 2 33v278q0 26-18 44t-44 18-44-18-19-44v-152h-18v295q0 25-18 44t-44 18-44-18-19-44v-295h-17v366q0 26-19 44t-44 19z m0 71q38 0 70-20t50-54q10 3 23 3 55 0 95-40t39-94v-10q59 4 101-36t42-97v-278q0-22-5-46l-42-226q-8-44-43-73t-80-29h-384q-33 0-64 15t-50 42l-214 286q-29 38-29 86 0 59 42 101t101 41q43 0 71-18v242q0 55 40 94t94 40q13 0 24-3 17 34 49 54t70 20z" horiz-adv-x="1000" />
+</font>
+</defs>
+</svg>
