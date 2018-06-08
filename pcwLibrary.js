@@ -100,7 +100,21 @@ RequestInterface.prototype.getRequestFETCH = function(url, callbacksuccess)
 			);
 }
 
-RequestInterface.prototype.postRequest = function (url, form, callbacksuccess, isHeaderRequired, isUserRequired)
+RequestInterface.prototype.getRequestAJAX = function(url, callbacksuccess)
+{
+	xhr = new XMLHttpRequest();
+
+	xhr.open('GET', this.geturl(url), true);
+
+	xhr.onload = function()
+	{
+		callbacksuccess(xhr.responseText);
+	}
+
+	xhr.send();
+}
+
+RequestInterface.prototype.postRequestAJAX = function (url, form, callbacksuccess, isHeaderRequired, isUserRequired)
 {
 	let formData = new FormData(form),
 		xhr = new XMLHttpRequest();
@@ -122,6 +136,34 @@ RequestInterface.prototype.postRequest = function (url, form, callbacksuccess, i
 	}
 
 	xhr.send(formData);
+}
+
+RequestInterface.prototype.postRequestFETCH = function (url, form, callbacksuccess, isHeaderRequired, isUserRequired)
+{
+	let formData = new FormData(form);
+	let data = {'method':'POST', 'body': formData};
+
+	if(isUserRequired)
+	{
+		formData.append('l', userManager.getLogin())
+	}
+
+	if(isHeaderRequired)
+	{
+		let header = {'Authorization' : userManager.getKey()}
+		data["headers"] = header;
+	}
+
+	fetch(this.geturl(url), data).then(
+		function(result)
+		{
+			callbacksuccess(result);
+		},
+		function(error)
+		{
+
+		});
+
 }
 
 ModalManagement.prototype.setModalZone = function()

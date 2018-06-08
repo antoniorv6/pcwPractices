@@ -1,9 +1,12 @@
 function pruebaGet()
 {
-	reqInterface.getRequestFETCH('receta/6', procesaJSON);
+	reqInterface.getRequestAJAX('receta/6', procesaJSON);
 
 	function procesaJSON(objJSON)
 	{
+		/*
+		Si uso FETCH
+
 		objJSON.json().then(function(json){
 			console.log(json);
 			let body = document.querySelector('body'),
@@ -14,23 +17,43 @@ function pruebaGet()
 			body.appendChild(newEl);
 
 		});
+		*/
+		//Si uso AJAX
+		
+		let json = JSON.parse(objJSON);
+		console.log(json);
 	}
 
 }
 
 function pruebaPost(formulario)
 {
-	reqInterface.postRequest('login/', formulario, login_ok, false, false);
+	reqInterface.postRequestFETCH('login/', formulario, login_ok, false, false);
 
 	function login_ok(response)
 	{
-		let responsejs = JSON.parse(response);
-		console.log(responsejs);
-		userManager.setLogin(responsejs.login);
-		userManager.setKey(responsejs.clave);
+		//SI LO HAGO CON FETCH
 
-		console.log(userManager.getLogin());
-		console.log(userManager.getKey());
+		response.json().then(function(responsejs)
+		{
+			console.log(responsejs);
+			userManager.setLogin(responsejs.login);
+			userManager.setKey(responsejs.clave);
+
+			console.log(userManager.getLogin());
+			console.log(userManager.getKey());
+		});
+
+		//SI LO HAGO CON AJAX
+		/*
+			let responsejs = JSON.parse(response);
+			console.log(responsejs);
+			userManager.setLogin(responsejs.login);
+			userManager.setKey(responsejs.clave);
+
+			console.log(userManager.getLogin());
+			console.log(userManager.getKey());
+		*/
 	}
 
 	return false;
@@ -38,7 +61,7 @@ function pruebaPost(formulario)
 
 function postComment(formulario)
 {
-	reqInterface.postRequest('receta/6/comentario', formulario, comment_ok, true, true);
+	reqInterface.postRequestFETCH('receta/6/comentario', formulario, comment_ok, true, true);
 
 	function comment_ok(response)
 	{
