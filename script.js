@@ -45,6 +45,7 @@ function pruebaPost(formulario)
 		});
 
 		//SI LO HAGO CON AJAX
+		
 		/*
 			let responsejs = JSON.parse(response);
 			console.log(responsejs);
