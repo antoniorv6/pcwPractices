@@ -1,3 +1,4 @@
+var counter = 1
 function pruebaGet()
 {
 	reqInterface.getRequestAJAX('receta/6', procesaJSON);
@@ -89,6 +90,16 @@ function cargaFoto(file)
 		console.log(photo);
 		document.querySelector('.placerPhoto').appendChild(photo);
 	}
+}
+
+function AddCanvas()
+{
+	document.querySelector('body').innerHTML += '<br>'
+	cvManager.addNewCanvas('cv0' + counter, 420, 360);
+	document.querySelector('body').innerHTML += `<br><input type="file" onchange = "cvManager.drawImageOnCanvas(this,'cv0' + ${counter})">
+												 <br><button onclick = "cvManager.resetCanvas('cv0' + ${counter} )">Resetea</button>`;
+	console.log(cvManager.getCanvasArray());
+	counter ++;
 }
 
 

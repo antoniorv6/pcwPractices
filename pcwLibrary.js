@@ -83,6 +83,59 @@ function FileManager()
 	}
 }
 
+function CanvasSettings(identificator)
+{
+	var width = undefined,
+		height = undefined,
+		id = identificator;
+
+	this.getID = function()
+	{
+		return id;
+	}
+
+	this.setWidth = function(newWidth)
+	{
+		width = newWidth;
+	}
+	this.setHeight = function(newHeight)
+	{
+		height = newHeight;
+	}
+	this.setSize = function(newWidth, newHeight)
+	{
+		this.setWidth(newWidth);
+		this.setHeight(newHeight);
+		let cv = document.getElementById(this.getID());
+		cv.width = newWidth;
+		cv.height = newHeight;
+	}
+	this.getSize = function()
+	{
+		return [width, height];
+	}
+	this.reset = function()
+	{
+		document.getElementById(id).width = width;
+		console.log('reseted');
+	}
+}
+
+function CanvasManager()
+{
+	let canvasArray = {};
+
+	this.getCanvasArray = function()
+	{
+		return canvasArray;
+	}
+
+	this.resetCanvas = function(identificator)
+	{
+		canvasArray[identificator].reset();
+	}
+}
+
 //DEFINICION DE METODOS COMPLEJOS
 
 RequestInterface.prototype.getRequestFETCH = function(url, callbacksuccess)
@@ -246,8 +299,34 @@ FileManager.prototype.checkExtension = function(file)
 	return false;
 }
 
+CanvasManager.prototype.addNewCanvas = function(identificator, width, height)
+{
+	document.querySelector('body').innerHTML += `<canvas id=${identificator}></canvas>`;
+	let canvasArray = this.getCanvasArray();
+	canvasArray[identificator] = new CanvasSettings(identificator);
+	canvasArray[identificator].setSize(width,height);
+}
+
+CanvasManager.prototype.drawImageOnCanvas = function(file, canvasID)
+{
+	let cv = document.getElementById(canvasID),
+		ctx = cv.getContext('2d');
+
+	fileManager.chargePhoto(file, load_ok);
+
+	this.resetCanvas(canvasID);
+
+	function load_ok(img)
+	{
+		ctx.drawImage(img, 0 ,0, cv.width, cv.height);
+		console.log('todook');
+	}
+}
+
+
 
 let reqInterface = new RequestInterface(),
 	userManager = new UserManagement();
 	modalManager = new ModalManagement();
 	fileManager = new FileManager();
+	cvManager = new CanvasManager();
