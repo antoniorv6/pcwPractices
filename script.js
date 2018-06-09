@@ -429,6 +429,7 @@ function EndGame()
 	openModal(0);
 }
 
+
 function ShowHelp()
 {
 	RedrawCanvas();
