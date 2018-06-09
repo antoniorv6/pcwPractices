@@ -70,6 +70,7 @@ function StartGame()
 		document.getElementById("dificulty").disabled = true;
 		document.getElementById("end").disabled = false;
 		document.getElementById("help").disabled = false;
+		document.getElementById("colorpicker").disabled = true;
 		document.querySelector('.Itson').innerHTML += 
 		`<h3>El juego está en marcha</h3>
 		<p id="disordered">Quedan ${disordered} piezas por colocar</p>
@@ -97,7 +98,7 @@ function UpdateMovements()
 
 function disorderMatrix()
 {
-	let ctr = puzzleheight;
+	let ctr = 10 * puzzleheight;
 
 	while(ctr>0)
 	{
@@ -439,7 +440,7 @@ function ShowHelp()
 	{
 		for(var j = 0; j<puzzleheight; j++)
 		{
-			if(OriginalMatrix[i][j] == PuzzleMatrix[i][j])
+			if(OriginalMatrix[i][j] != PuzzleMatrix[i][j])
 			{
 				ctx.lineWidth = 2;
 				ctx.fillStyle = 'rgba(255,0,0,0.7)';
@@ -503,6 +504,7 @@ function Reset()
 		document.getElementById("uploadPhoto").disabled = false;
 		document.getElementById("end").disabled = true;
 		document.getElementById("help").disabled = true;
+		document.getElementById("colorpicker").disabled = false;
 		isphotoPlaced = false;	
 		actualState = 0;
 		initMatrixes();
